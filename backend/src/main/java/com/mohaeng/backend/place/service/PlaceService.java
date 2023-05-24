@@ -261,8 +261,6 @@ public class PlaceService {
     }
 
     public List<String> getPlaceOverview(String contentId) {
-        StopWatch stopWatch = new StopWatch();
-        stopWatch.start();
 
         List<Place> places = placeRepository.findByContentId(contentId);
 
@@ -277,8 +275,6 @@ public class PlaceService {
                 })
                 .collect(Collectors.toList());
 
-        stopWatch.stop();
-        long totalTimeMillis = stopWatch.getTotalTimeMillis();
         return overviews;
     }
 
