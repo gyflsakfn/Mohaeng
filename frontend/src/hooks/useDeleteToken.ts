@@ -13,6 +13,19 @@ function useDeleteToken(): void {
   const remainingTimeRef = useRef<number>(0);
 
   useEffect(() => {
+    if (accessToken && startTimeRef.current) {
+      localStorage.setItem(
+        "startTime",
+        Math.floor(startTimeRef.current).toString()
+      );
+      localStorage.setItem(
+        "remainingTime",
+        Math.floor(remainingTimeRef.current).toString()
+      );
+    }
+  }, [accessToken]);
+
+  useEffect(() => {
     const deleteToken = (): void => {
       cookie.remove("accessToken", { path: "/" });
       dispatch(resetLog());
@@ -25,11 +38,11 @@ function useDeleteToken(): void {
       const storedStartTime = localStorage.getItem("startTime");
       const storedRemainingTime = localStorage.getItem("remainingTime");
       const currentTime = Date.now();
-      const elapsedTime = storedStartTime
+      const passedTime = storedStartTime
         ? currentTime - parseInt(storedStartTime)
         : 0;
       const remainingTime = storedRemainingTime
-        ? parseInt(storedRemainingTime) - elapsedTime
+        ? parseInt(storedRemainingTime) - passedTime
         : waitTime;
 
       if (remainingTime > 0) {
@@ -52,32 +65,20 @@ function useDeleteToken(): void {
     };
   }, [accessToken]);
 
-  useEffect(() => {
-    if (accessToken && startTimeRef.current) {
-      localStorage.setItem(
-        "startTime",
-        Math.floor(startTimeRef.current).toString()
-      );
-      localStorage.setItem(
-        "remainingTime",
-        Math.floor(remainingTimeRef.current).toString()
-      );
-    }
-  }, [accessToken]);
+  // 콘솔로 확인
+  // useEffect(() => {
+  //   if (accessToken) {
+  //     const interval = setInterval(() => {
+  //       const remainingSeconds = Math.floor(remainingTimeRef.current / 1000);
+  //       console.log("Remaining time:", remainingSeconds, "seconds");
+  //       remainingTimeRef.current -= 1000;
+  //     }, 1000);
 
-  useEffect(() => {
-    if (accessToken) {
-      const interval = setInterval(() => {
-        const remainingSeconds = Math.floor(remainingTimeRef.current / 1000);
-        console.log("Remaining time:", remainingSeconds, "seconds");
-        remainingTimeRef.current -= 1000;
-      }, 1000);
-
-      return (): void => {
-        clearInterval(interval);
-      };
-    }
-  }, [accessToken]);
+  //     return (): void => {
+  //       clearInterval(interval);
+  //     };
+  //   }
+  // }, [accessToken]);
 }
 
 export default useDeleteToken;
