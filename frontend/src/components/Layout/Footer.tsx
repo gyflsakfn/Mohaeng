@@ -6,7 +6,7 @@ const Footer = () => {
   return (
     <footer className={styles.footer}>
       <p>
-        © {curYear} Copyright ⓒ Mohaeng Corp. All rights reserved ❤️ by
+        © {curYear} Copyright ⓒ Mohaeng Corp. All rights reserved ❤️ by&nbsp;
         <Link href="https://github.com/Mohaeng2023/Mohaeng">Team Mohaeng</Link>
       </p>
     </footer>
