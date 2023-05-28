@@ -104,9 +104,11 @@ public class ReviewService {
 
         double averageRating = reviewRepository.getAverageRatingByPlaceId(placeId);
         findPlace.updateRating(averageRating);
+        placeRepository.save(findPlace);
         if (fileNameList != null && !fileNameList.isEmpty()) {
             registerImage(fileNameList, review);
         }
+
         entityManager.flush();
         entityManager.clear();
     }
@@ -129,13 +131,13 @@ public class ReviewService {
     }
 
     @Transactional
-    public void updateReview(Long placeId, UpdateReviewRequest updateReviewRequest, List<String> fileNameList) {
-        Place findPlace = placeRepository.findById(placeId)
-                .orElseThrow(PlaceNotFoundException::new);
-
-        Review review = reviewRepository.findById(placeId)
+    public void updateReview(Long reviewId, UpdateReviewRequest updateReviewRequest, List<String> fileNameList) {
+        Review review = reviewRepository.findById(reviewId)
                 .orElseThrow(ReviewNotFoundException::new);
         review.update(updateReviewRequest.getTitle(), updateReviewRequest.getContent(), updateReviewRequest.getRating());
+
+        Place findPlace = placeRepository.findById(review.getPlace().getId())
+                .orElseThrow(PlaceNotFoundException::new);
 
         // Delete existing images
         for (ReviewImage reviewImage : review.getReviewImageList()) {
@@ -148,12 +150,9 @@ public class ReviewService {
             registerImage(fileNameList, review);
         }
         double averageRating = reviewRepository.getAverageRatingByPlaceId(review.getPlace().getId());
-
         findPlace.updateRating(averageRating);
+        reviewRepository.save(review);
         placeRepository.save(findPlace);
-        // Check the value of the rating field in the DB
-        Place findPlaceInDB = placeRepository.findById(placeId).orElseThrow(PlaceNotFoundException::new);
-//        registerImage(fileNameList, review); JPA 1차 캐시 문제 해결.
         entityManager.flush();
         entityManager.clear();
     }
@@ -175,11 +174,9 @@ public class ReviewService {
 
         // Delete review and related images from database
         reviewRepository.delete(review);
-        double averageRating = reviewRepository.getAverageRatingByPlaceId(review.getPlace().getId());
+        double averageRating = reviewRepository.getAverageRatingByPlaceId(placeId);
         findPlace.updateRating(averageRating);
         placeRepository.save(findPlace);
-
-        // Clear JPA cache
         entityManager.flush();
         entityManager.clear();
     }
