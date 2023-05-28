@@ -3,6 +3,7 @@ package com.mohaeng.backend.place.controller;
 import com.mohaeng.backend.Image.AmazonS3Service;
 import com.mohaeng.backend.common.BaseResponse;
 import com.mohaeng.backend.exception.notfound.PlaceNotFoundException;
+import com.mohaeng.backend.exception.notfound.ReviewNotFoundException;
 import com.mohaeng.backend.member.jwt.TokenGenerator;
 import com.mohaeng.backend.place.domain.Place;
 import com.mohaeng.backend.place.domain.Review;
@@ -43,7 +44,9 @@ public class ReviewController {
     public ResponseEntity getPlaceReview(@PathVariable Long placeId,
                                          @RequestParam(defaultValue = "1") int page) {
         Page<Review> reviews = reviewService.getAllReviewByPage(placeId, page);
-        Place findPlace = placeRepository.findById(placeId)
+        Review review2 = reviewRepository.findById(placeId)
+                .orElseThrow(ReviewNotFoundException::new);
+        Place findPlace = placeRepository.findById(review2.getPlace().getId())
                 .orElseThrow(PlaceNotFoundException::new);
         List<FindAllReviewResponse> data = reviews.map(review -> FindAllReviewResponse.of(review, findPlace)).getContent();
         double averageRating = Math.round(reviewRepository.getAverageRatingByPlaceId(placeId) * 100 ) / 100.0;
@@ -83,7 +86,6 @@ public class ReviewController {
         }
         reviewService.updateReview(reviewId, updateReviewRequest, fileNameList);
         Review review = reviewService.getReviewById(reviewId);
-        double averageRating = reviewRepository.getAverageRatingByPlaceId(review.getPlace().getId());
         Place findPlace = placeRepository.findById(review.getPlace().getId())
                 .orElseThrow(PlaceNotFoundException::new);
         FindAllReviewResponse response = FindAllReviewResponse.of(review, findPlace);
