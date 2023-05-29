@@ -13,19 +13,6 @@ function useDeleteToken(): void {
   const remainingTimeRef = useRef<number>(0);
 
   useEffect(() => {
-    if (accessToken && startTimeRef.current) {
-      localStorage.setItem(
-        "startTime",
-        Math.floor(startTimeRef.current).toString()
-      );
-      localStorage.setItem(
-        "remainingTime",
-        Math.floor(remainingTimeRef.current).toString()
-      );
-    }
-  }, [accessToken]);
-
-  useEffect(() => {
     const deleteToken = (): void => {
       cookie.remove("accessToken", { path: "/" });
       dispatch(resetLog());
@@ -63,6 +50,19 @@ function useDeleteToken(): void {
     return (): void => {
       clearTimeout(timerRef.current!);
     };
+  }, [accessToken]);
+
+  useEffect(() => {
+    if (accessToken && startTimeRef.current) {
+      localStorage.setItem(
+        "startTime",
+        Math.floor(startTimeRef.current).toString()
+      );
+      localStorage.setItem(
+        "remainingTime",
+        Math.floor(remainingTimeRef.current).toString()
+      );
+    }
   }, [accessToken]);
 
   // 콘솔로 확인
