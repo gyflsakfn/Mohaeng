@@ -1,33 +1,42 @@
 .myCourse-container {
-  background-color: #f3f3f3;
-  padding: 2rem;
-  border-radius: 10px;
   display: flex;
   flex-direction: column;
+  justify-content: space-between;
   align-items: center;
   height: 100%;
+  width: 100%;
+  padding: 2rem;
+  box-sizing: border-box;
+  background-color: #f3f3f3;
+  border-radius: 10px;
 }
+
 .myCourse-item {
-  border: 1px solid var(--color-border-semi);
-  box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
-  border-radius: 18px;
-  padding: 1rem;
   display: flex;
   align-items: center;
-  width: 800px;
+  width: 100%;
+  padding: 1rem;
   gap: 1rem;
   margin-bottom: 1rem;
+  box-shadow: 0px 4px 6px 2px rgba(25, 25, 25, 0.25);
+  -webkit-box-shadow: 0px 4px 6px 2px rgba(25, 25, 25, 0.25);
+  -moz-box-shadow: 0px 4px 6px 2px rgba(25, 25, 25, 0.25);
+  border-bottom: 1px solid var(--color-border-light);
+  border-radius: 12px;
 }
 
 .img {
   width: 200px;
   height: 200px;
   object-fit: cover;
+  border-radius: 12px;
 }
 
-.myCourse-item div {
+.courseItemInfo {
   display: flex;
   flex-direction: column;
+  justify-content: center;
+  width: 100%;
   gap: 0.5rem;
 }
 
@@ -39,6 +48,7 @@
 .myCourse-item p {
   margin: 0.2rem 0;
 }
+
 .liked {
   font-size: large;
   color: red;
@@ -55,7 +65,7 @@
   border: none;
   border-radius: 5px;
   width: 65px;
-  margin-left: 28rem;
+  cursor: pointer;
 }
 
 .public {
@@ -66,6 +76,7 @@
   font-weight: bold;
   color: white;
   transition: background-color 0.4s ease;
+  cursor: pointer;
 }
 
 .private {
@@ -76,8 +87,62 @@
   font-weight: bold;
   color: var(--color-text-basic);
   transition: background-color 0.4s ease;
+  cursor: pointer;
 }
 
 .statusContainer {
   display: flex;
+}
+
+@media screen and (max-width: 1024px) {
+  .myCourse-item {
+    min-width: 100%;
+  }
+
+  .courseItemInfo {
+    width: 400px;
+  }
+
+  .publicButton {
+    width: 50px;
+  }
+}
+
+@media screen and (max-width: 800px) {
+  .myCourse-item {
+    width: 100%;
+  }
+
+  .courseItemInfo {
+    gap: 0;
+  }
+
+  .img {
+    width: 150px;
+    height: 150px;
+  }
+}
+
+@media screen and (max-width: 600px) {
+  .myCourse-item {
+    width: 100%;
+    flex-direction: column;
+  }
+
+  .myCourse-item h2 {
+    font-size: medium;
+  }
+
+  .myCourse-item p {
+    font-size: small;
+  }
+
+  .courseItemInfo {
+    width: 100%;
+  }
+
+  .img {
+    width: 290px;
+    height: 180px;
+  }
 }

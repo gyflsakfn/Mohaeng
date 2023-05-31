@@ -11,3 +11,28 @@
   padding: 2rem 3rem;
   text-align: center;
 }
+
+@media screen and (max-width: 800px) {
+  .loadingBox {
+    width: 80%;
+    margin: 0 auto;
+  }
+
+  .loading {
+    width: 100%;
+    margin: 0 auto;
+    padding-top: 3rem;
+  }
+}
+
+@media screen and (max-width: 600px) {
+  .loadingBox {
+    width: 80%;
+    margin: 0 auto;
+  }
+
+  .loading {
+    width: 100%;
+    margin: 0 auto;
+  }
+}

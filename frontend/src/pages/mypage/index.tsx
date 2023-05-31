@@ -31,7 +31,7 @@ const MyPage: React.FC = () => {
     <div className={styles.Container}>
       <Sidebar />
       <div className={styles.contentWrapper}>
-        <h1 className={styles["Title"]}>{label}</h1>
+        <h2 className={styles["Title"]}>{label}</h2>
         <div className={styles.itemWrapper}>
           {
             {

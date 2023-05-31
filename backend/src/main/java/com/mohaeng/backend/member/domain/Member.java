@@ -13,14 +13,15 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Where(clause = "deleted_date IS NULL")
-@SQLDelete(sql = "UPDATE member SET deleted_date = CURRENT_TIMESTAMP WHERE member_id = ?")
+//@Where(clause = "deleted_date is NULL")
 public class Member extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -50,10 +51,10 @@ public class Member extends BaseTimeEntity {
 
     private Long kakaoId;
 
-    @OneToMany(mappedBy = "member", cascade = CascadeType.REMOVE)
+    @OneToMany(mappedBy = "member")
     private List<CourseBookmark> courseBookMarkList = new ArrayList<>();
 
-    @OneToMany(mappedBy = "member", cascade = CascadeType.REMOVE)
+    @OneToMany(mappedBy = "member",  cascade = CascadeType.REMOVE)
     private List<PlaceBookmark> placeBookmarkList = new ArrayList<>();
 
     @OneToMany(mappedBy = "member", cascade = CascadeType.REMOVE)
@@ -93,9 +94,12 @@ public class Member extends BaseTimeEntity {
         this.oauthAccessToken = oauthAccessToken;
     }
 
-    public void changeImageURL(String imageURL) {
-        this.imageURL = imageURL;
+    public List<Long> getCourseIds() {
+        return this.courseList.stream()
+                .map(m -> m.getId())
+                .collect(Collectors.toList());
     }
+
 
     public void setKakaoId(Long kakaoId) {
         this.kakaoId = kakaoId;

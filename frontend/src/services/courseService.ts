@@ -1,49 +1,59 @@
 import axios from "axios";
-import { ICourse, ICourseSubmitForm } from "../interfaces/Course.type";
+import { ICourseSubmitForm } from "../interfaces/Course.type";
 import CourseApiConfig from "./ApiConfig";
 import cookie from "react-cookies";
 
 export const getCourseListApi = async (queryParams = {}) => {
-  const accessToken = await cookie.load("accessToken");
-  return axios.get(CourseApiConfig.course, {
-    params: queryParams,
-    headers: {
-      "Cache-Control": "no-cache",
-      "Access-Token": accessToken,
-      withCredentials: true,
-    },
-  });
+  try {
+    const accessToken = cookie.load("accessToken");
+
+    const config = {
+      params: queryParams,
+      headers: {
+        "Access-Token": accessToken,
+      },
+    };
+
+    const response = await axios.get(CourseApiConfig.course, config);
+    return response.data.data;
+  } catch (error) {
+    console.error("Error in getCourseListApi:", error);
+    throw error;
+  }
 };
 
 export const createCourseApi = async (data: ICourseSubmitForm) => {
-  const accessToken = await cookie.load("accessToken");
-  return await axios.post(CourseApiConfig.course, data, {
-    headers: {
-      "Access-Token": accessToken,
-      withCredentials: true,
-    },
-  });
+  const accessToken = cookie.load("accessToken");
+  try {
+    const response = await axios.post(CourseApiConfig.course, data, {
+      headers: {
+        "Access-Token": accessToken,
+      },
+    });
+    return response.data.data;
+  } catch (error) {
+    console.log(error);
+  }
 };
+
 export const editCourseApi = async (
   courseId: number,
   data: ICourseSubmitForm
 ) => {
-  const accessToken = await cookie.load("accessToken");
+  const accessToken = cookie.load("accessToken");
   return await axios.put(`${CourseApiConfig.course}/${courseId}`, data, {
     headers: {
       "Access-Token": accessToken,
-      withCredentials: true,
     },
   });
 };
 
-export const deleteCourseApi = async (courseId: number) => {
-  const accessToken = await cookie.load("accessToken");
+export const removeCourseApi = async (courseId: number) => {
+  const accessToken = cookie.load("accessToken");
   try {
     const config = {
       headers: {
         "Access-Token": accessToken,
-        withCredentials: true,
       },
     };
     const response = await axios.delete(
@@ -60,14 +70,13 @@ export const toggleBookmarkApi = async (
   courseId: number,
   method: "POST" | "DELETE"
 ) => {
-  const accessToken = await cookie.load("accessToken");
+  const accessToken = cookie.load("accessToken");
   try {
     const config = {
       method: method,
       data: {},
       headers: {
         "Access-Token": accessToken,
-        withCredentials: true,
       },
     };
     const response = await axios(
@@ -84,14 +93,13 @@ export const toggleLikeApi = async (
   courseId: number,
   method: "POST" | "DELETE"
 ) => {
-  const accessToken = await cookie.load("accessToken");
+  const accessToken = cookie.load("accessToken");
   try {
     const config = {
       method: method,
       data: {},
       headers: {
         "Access-Token": accessToken,
-        withCredentials: true,
       },
     };
     const response = await axios(`${CourseApiConfig.like}/${courseId}`, config);

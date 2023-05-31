@@ -1,0 +1,27 @@
+.loading-container {
+  width: 100%; /* 애니메이션을 포함하는 요소의 너비 */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.2rem 0 0.6rem;
+}
+.no-results {
+  text-align: center;
+  padding: 0.4rem;
+}
+.loader-container {
+  height: 40px;
+}
+
+.img {
+  animation: spin 3s linear infinite;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}

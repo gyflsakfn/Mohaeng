@@ -9,8 +9,10 @@ services:
       MYSQL_ROOT_PASSWORD: 1234
     volumes:
       - ./db:/var/lib/mysql:rw
+    networks:
+      - mohaeng_network
     ports:
-      - 3306:3306
+      - "3306:3306"
     restart: always
 
   backend:
@@ -22,8 +24,13 @@ services:
       - "8080:8080"
     depends_on:
       - db
+    networks:
+      - mohaeng_network
     container_name: "backend"
     environment:
       SPRING_DATASOURCE_URL: jdbc:mysql://my_sql:3306/testdb?useSSL=false&allowPublicKeyRetrieval=true&useUnicode=true&characterEncoding=UTF-8&rewriteBatchedStatements=true&profileSQL=true&logger=Slf4JLogger&maxQuerySizeToLog=999999
       SPRING_DATASOURCE_USERNAME: root
       SPRING_DATASOURCE_PASSWORD: 1234
+      
+networks:
+  mohaeng_network:

@@ -29,18 +29,12 @@ public class CourseBookmark extends BaseTimeEntity {
     @JoinColumn(name = "member_id")
     private Member member;
 
-    private LocalDateTime deletedDate;
-
     @Builder
     public CourseBookmark(Long id, Course course, Member member, LocalDateTime createdDate, LocalDateTime deletedDate) {
         this.id = id;
         this.course = course;
         this.member = member;
         this.deletedDate = deletedDate;
-    }
-
-    public void updateDeleteDate(){
-        this.deletedDate = LocalDateTime.now();
     }
 
     public static CourseBookmark of(Member member, Course course){

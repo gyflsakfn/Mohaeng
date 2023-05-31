@@ -5,9 +5,8 @@ import FiveStarRating from "../FiveStarRating/FiveStarRating";
 export interface MyReviewItemProps {
   reviewId: number;
   placeId: number;
-  title: string;
+  name: string;
   content: string;
-  likeCount: number;
   rating: string;
   imgUrl: string;
   createdDate: string;
@@ -27,30 +26,26 @@ const MyReviewItem = (myReview: MyReviewItemProps) => {
   return (
     <div key={myReview.reviewId} className={styles["myReview-item"]}>
       <Link
-        href={{
-          pathname: "/place/[id]",
-          query: {
-            contentId: myReview.contentId,
-            placeId: myReview.reviewId,
-            name: myReview.title,
-          },
-        }}
-        as={`/place/${myReview.contentId}`}
+        href={`/place/${myReview.placeId}`}
+        // href={{
+        //   pathname: "/place/[id]",
+        //   query: {
+        //     contentId: myReview.contentId,
+        //     placeId: myReview.placeId,
+        //     name: myReview.name,
+        //   },
+        // }}
+        // as={`/place/${myReview.placeId}`}
       >
-        <img
-          src={myReview.imgUrl}
-          alt={myReview.title}
-          className={styles.img}
-        />
+        <img src={myReview.imgUrl} alt={myReview.name} className={styles.img} />
       </Link>
       <div>
-        <h2>{myReview.title}</h2>
-
+        <h2>{myReview.name}</h2>
         <p>{getFormattedDate(new Date(myReview.createdDate))}</p>
-        <p>{myReview.content}</p>
         <p>
           <FiveStarRating rating={myReview.rating} />
         </p>
+        <p>{myReview.content}</p>
       </div>
     </div>
   );

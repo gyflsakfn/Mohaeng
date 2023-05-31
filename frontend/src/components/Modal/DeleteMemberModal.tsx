@@ -33,14 +33,14 @@ export default function DeleteMemberModal() {
           withCredentials: true,
         });
       }
-
+    };
+    response().then(() => {
       cookie.remove("accessToken", { path: "/" });
       dispatch(setToken(""));
       dispatch(setNickname(""));
       dispatch(setEmail(""));
       dispatch(setId(0));
-    };
-    response();
+    });
     handleModalClose();
     router.replace("/");
   };
@@ -48,12 +48,17 @@ export default function DeleteMemberModal() {
   return (
     <>
       <div className={styles["ContentWrapper"]}>
-        <h2>회원 탈퇴</h2>
+        <h2 className={styles["h2"]}>회원 탈퇴</h2>
         <div className={styles["TextWrapper"]}>
-          <h3>
-            정말 탈퇴하시겠어요? 탈퇴시 회원님이 작성하신 여행 일정과 북마크해둔
-            장소들이 영구 삭제됩니다! 🥺
-          </h3>
+          <p className={styles["text"]}>
+            정말 <strong>탈퇴</strong>하시겠어요? <br />
+            탈퇴 시
+            <strong>
+              {" "}
+              회원님이 작성하신 여행 일정과 북마크해둔 장소들이 영구 삭제
+            </strong>{" "}
+            됩니다! 🥺
+          </p>
         </div>
         <div className={styles["ButtonWrapper"]}>
           <Button type="click" text="회원탈퇴" onClick={() => deleteUser()} />

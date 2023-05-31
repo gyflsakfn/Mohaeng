@@ -44,6 +44,7 @@ const ReviewRating = ({ clicked, onStarClick }: RatingProps) => {
 export default ReviewRating;
 
 const Stars = styled.div`
+  width: 250px;
   display: flex;
   padding-top: 5px;
 

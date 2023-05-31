@@ -25,7 +25,6 @@ public class CourseLikesService {
     private final MemberRepository memberRepository;
     private final CourseRepository courseRepository;
 
-
     @Transactional
     public CourseLikesRes addLikes(Long courseId, String memberEmail) {
         // 1. 로그인 하지 않은 유저 확인
@@ -60,7 +59,7 @@ public class CourseLikesService {
 
         // 4. 해당 CourseLikes 찾아서, deletedDate update & Course likeCount 감소
         CourseLikes courseLikes = courseLikesRepository.findByMemberAndCourse(member, course);
-        courseLikes.updateDeleteDate();
+        courseLikes.updateDeletedDate();
         course.cancelLikeCount();
 
         Long totalLikes = getTotalLikes(course);
@@ -96,7 +95,7 @@ public class CourseLikesService {
     }
 
     private Member isMember(String memberEmail){
-        return memberRepository.findByEmail(memberEmail).orElseThrow(MemberNotFoundException::new);
+        return memberRepository.findByEmailAndDeletedDateIsNull(memberEmail).orElseThrow(MemberNotFoundException::new);
     }
 
     private Course isCourse(Long id){

@@ -1,13 +1,31 @@
-.course-list-container {
+.course-list {
   width: 100%;
   display: grid;
-  padding: 2.4rem 2.4rem;
   grid-template-columns: repeat(4, 1fr);
   row-gap: 2.8rem;
   column-gap: 2.4rem;
-  border-right: 3px solid var(--color-border-light);
-  border-left: 3px solid var(--color-border-light);
-  border-top: 3px solid var(--color-border-light);
-  border-bottom: 3px solid var(--color-border-light);
-  border-radius: 0.6rem;
+}
+
+/* MEDIA QUERIES (tablets) */
+@media screen and (max-width: 1024px) {
+  .course-list {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+/* MEDIA QUERIES (middle) */
+@media screen and (max-width: 800px) {
+  .course-list {
+    grid-template-columns: repeat(2, 1fr);
+    column-gap: 2rem;
+    row-gap: 1.8rem;
+  }
+}
+
+/* MEDIA QUERIES (phones) */
+@media screen and (max-width: 600px) {
+  .course-list {
+    grid-template-columns: repeat(1, 1fr);
+    row-gap: 1.6rem;
+  }
 }

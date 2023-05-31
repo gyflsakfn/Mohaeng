@@ -23,5 +23,9 @@ public class BaseTimeEntity {
     @Column(nullable = false)
     private LocalDateTime modifiedDate;
 
-    private LocalDateTime deletedDate;
+    protected LocalDateTime deletedDate;
+
+    public void updateDeletedDate(){
+        this.deletedDate = LocalDateTime.now();
+    }
 }

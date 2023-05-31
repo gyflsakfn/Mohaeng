@@ -1,0 +1,41 @@
+.course-options-container {
+  display: flex;
+  position: relative;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 2rem;
+  padding-bottom: 0.6rem;
+  border-bottom: 1px solid var(--color-border-light);
+}
+.filter-wrapper {
+  display: flex;
+  gap: 1.4rem;
+}
+
+.write-btn {
+  padding: 0.5rem 1rem;
+  border-radius: 0.4rem;
+  background-color: var(--color-primary);
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--color-text-basic);
+  cursor: pointer;
+  border: none;
+  transition: 0.2s;
+}
+
+.write-btn:hover {
+  transform: translateY(-5px);
+}
+
+/* MEDIA QUERIES (phones) */
+@media screen and (max-width: 600px) {
+  .course-options-container {
+    flex-direction: column;
+    align-items: flex-end;
+  }
+  .filter-wrapper {
+    gap: 0.6rem;
+  }
+}

@@ -1,10 +1,13 @@
 .placeDetail {
-  width: 100%;
-  max-width: 70rem;
-  margin: 2rem 8rem 2rem;
+  display: flex;
+  flex-direction: column;
+  max-width: 100%;
+  min-width: 317px;
+  margin: 0 2rem;
   padding: 2rem 3rem;
-  background-color: var(--color-bg-lightgray);
+  background-color: transparent;
   border-radius: 12px;
+  color: var(--color-text-basic);
 
   --color-icon: #cfcfcf;
 }
@@ -14,20 +17,18 @@
   display: flex;
   justify-content: space-between;
   margin-bottom: 3rem;
-}
-
-.moveToReview:hover {
-  text-decoration: underline;
+  padding-bottom: 1rem;
+  border-bottom: 2px solid var(--color-border-light);
 }
 
 .h2 {
   font-size: 2rem;
-  margin-bottom: 1rem;
+  margin-bottom: 8px;
 }
 
-.rating,
-.review {
-  font-size: 16px;
+.address {
+  padding: 8px;
+  margin-bottom: 8px;
 }
 
 .bookMarkBox {
@@ -51,17 +52,28 @@
 }
 
 .imgBox {
+  width: 100%;
+  max-height: 350px;
   margin-bottom: 1rem;
   margin-right: 1rem;
   border-radius: 8px;
 }
 
 .img {
+  width: 100%;
+  height: 100%;
+  max-height: 350px;
   border-radius: 8px;
 }
 
 .detailMap {
   width: 100%;
+  height: 100%;
+  max-height: 350px;
+  margin-bottom: 1rem;
+}
+
+.map {
   height: 350px;
 }
 
@@ -71,13 +83,27 @@
   overflow-x: hidden;
   overflow-y: scroll;
   margin-bottom: 1rem;
+  padding: 1rem;
+}
+
+.detailDesc::-webkit-scrollbar {
+  width: 10px;
+}
+
+.detailDesc::-webkit-scrollbar-thumb {
+  height: 10%;
+  background: var(--color-border-light);
+  border-radius: 10px;
+}
+
+.detailDesc::-webkit-scrollbar-track {
+  background: rgba(142, 220, 246, 0.161);
 }
 
 .detailDesc,
-.detailMap {
-  padding: 1rem;
+.map {
   border: 1px solid var(--color-border-light);
-  background-color: var(--color-bg-white);
+
   border-radius: 8px;
 }
 
@@ -91,41 +117,161 @@
   margin-bottom: 1rem;
 }
 
-@media (max-width: 920px) {
+.reviewSection {
+  display: flex;
+  flex-direction: column;
+  max-width: 100%;
+  margin: 0 2rem;
+  padding: 2rem 3rem;
+  background-color: transparent;
+  border-radius: 12px;
+  color: var(--color-text-basic);
+
+  --color-icon: #cfcfcf;
+}
+
+/* header */
+.reviewContainer {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  background-color: transparent;
+  border-radius: 12px;
+}
+
+.reviewTitle {
+  display: flex;
+  margin-bottom: 0;
+}
+
+.titleBox {
+  display: flex;
+  flex-direction: row;
+}
+
+.reviewH2 {
+  font-size: 28px;
+  margin-right: 0.5rem;
+}
+
+.reviewInfo {
+  display: flex;
+  width: 9rem;
+  margin-right: 1rem;
+  font-size: small;
+}
+
+.reviewCount {
+  font-size: 28px;
+  color: var(--color-primary);
+  margin-right: 0.5rem;
+}
+
+.reviewAverage {
+  margin: 0 0 1.5rem;
+  font-size: 28px;
+}
+
+.reviewBtn {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 120px;
+  height: 50px;
+  padding: 1rem;
+  background-color: var(--color-primary);
+  border: none;
+  border-radius: 12px;
+  text-decoration: none;
+  text-align: center;
+  font-size: medium;
+  color: var(--color-text-basic);
+  cursor: pointer;
+}
+
+.reviewBtn:hover {
+  transition: all ease-in-out 0.1s;
+  box-shadow: 1px 7px 14px 0px var(--color-icon);
+  -webkit-box-shadow: 1px 7px 14px 0px var(--color-icon);
+  -moz-box-shadow: 1px 7px 14px 0px var(--color-icon);
+}
+
+.reviewNav {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 2rem;
+  padding-bottom: 1rem;
+  border-bottom: 2px solid var(--color-border-light);
+}
+
+.select {
+  -webkit-appearance: none; /* for chrome */
+  -moz-appearance: none; /*for firefox*/
+  appearance: none;
+  width: 120px;
+  height: 50px;
+  border-radius: 12px;
+  text-align: center;
+  border: 1px solid var(--color-border-light);
+  cursor: pointer;
+}
+
+.select:hover {
+  transition: all ease-in-out 0.1s;
+  border: 3px solid var(--color-border-light);
+  box-shadow: 1px 7px 14px 0px var(--color-icon);
+  -webkit-box-shadow: 1px 7px 14px 0px var(--color-icon);
+  -moz-box-shadow: 1px 7px 14px 0px var(--color-icon);
+}
+
+@media screen and (max-width: 1024px) {
+  .placeDetail {
+    margin: 1rem;
+    padding: 2rem;
+  }
+
+  .reviewSection {
+    width: auto;
+    margin: 1rem;
+    padding: 2rem;
+  }
+}
+
+@media screen and (max-width: 800px) {
   .placeDetail {
     width: auto;
-    margin: 2rem 1rem;
+    margin: 1rem 0 0;
+    padding: 1rem;
+  }
+
+  .map {
+    height: 300px;
+  }
+
+  .reviewSection {
+    width: auto;
+    margin: 1rem 0 0;
     padding: 1rem;
   }
 
   .detailHeader {
     flex-direction: column;
+    justify-content: center;
     align-items: center;
     margin-bottom: 1rem;
   }
 
   .h2 {
     font-size: 1.5rem;
-    margin-bottom: 0.5rem;
+    text-align: center;
   }
 
-  .rating,
-  .review {
-    font-size: 14px;
+  .headerTitle {
+    margin-bottom: 1rem;
   }
 
-  .imgBox {
-    margin-bottom: 0.5rem;
-    margin-right: 0.5rem;
-    width: 50%;
-  }
-
-  .img {
-    width: 100%;
-  }
-
-  .detailMap {
-    height: 200px;
+  .detailContent {
+    flex-direction: column;
   }
 
   .detailDesc {
@@ -137,6 +283,88 @@
   }
 
   .descInfo {
+    font-size: small;
+  }
+
+  .reviewContainer {
+    padding: 1rem;
+  }
+
+  .reviewTitle {
+    flex-direction: row;
+    align-items: center;
+    margin-bottom: 0.5rem;
+  }
+
+  .reviewH2 {
+    font-size: 24px;
+  }
+
+  .reviewCount {
+    font-size: 24px;
+  }
+
+  .reviewAverage {
+    font-size: 24px;
+  }
+
+  .reviewBtn {
+    width: 100%;
+  }
+
+  .reviewNav {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10rem;
+    margin-bottom: 1rem;
+  }
+
+  /* .reviewInfo {
+    width: 100%;
+    margin-right: 0;
+    margin-bottom: 1rem;
+  } */
+
+  .select {
+    width: 100%;
+  }
+}
+
+@media screen and (max-width: 600px) {
+  .reviewSection {
+    width: auto;
+    margin: 1rem 0 0 0;
+    padding: 0;
+  }
+
+  .detailHeader {
+    text-align: center;
+  }
+
+  .map {
+    height: 200px;
+  }
+
+  .reviewH2 {
+    font-size: 20px;
+  }
+
+  .reviewCount {
+    font-size: 20px;
+  }
+
+  .reviewAverage {
+    font-size: 20px;
+  }
+
+  .reviewNav {
+    gap: 5rem;
+    margin-bottom: 1rem;
+  }
+
+  .reviewBtn {
+    width: 100%;
     font-size: small;
   }
 }

@@ -2,7 +2,6 @@ package com.mohaeng.backend.member.service;
 
 import com.mohaeng.backend.course.domain.CourseBookmark;
 import com.mohaeng.backend.course.repository.CourseBookmarkRepository;
-import com.mohaeng.backend.course.repository.CourseRepository;
 import com.mohaeng.backend.exception.badrequest.NotMatchMemberCourseBookMark;
 import com.mohaeng.backend.exception.badrequest.NotMatchMemberPlaceBookMark;
 import com.mohaeng.backend.exception.badrequest.NotMatchMemberReview;
@@ -19,6 +18,7 @@ import com.mohaeng.backend.place.domain.Review;
 import com.mohaeng.backend.place.repository.PlaceBookmarkRepository;
 import com.mohaeng.backend.place.repository.ReviewRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -28,9 +28,9 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class MyPageService {
     private final CourseBookmarkRepository courseBookmarkRepository;
-    private final CourseRepository courseRepository;
     private final MemberRepository memberRepository;
     private final PlaceBookmarkRepository placeBookmarkRepository;
     private final ReviewRepository reviewRepository;
@@ -39,16 +39,18 @@ public class MyPageService {
     @Transactional
     public List<MyPageCourseBookMarkDto> findAllBookMarkCourse(String email) {
         Member member = isMember(email);
+        for (CourseBookmark courseBookmark : member.getCourseBookMarkList()) {
+            log.info("courseBookmarkId = {}", courseBookmark.getId());
+        }
 
         return member.getCourseBookMarkList().stream()
-                .filter(m -> courseRepository.findById(m.getId()).isPresent())
                 .map(bookmark -> MyPageCourseBookMarkDto.of(bookmark))
                 .sorted(Comparator.comparing(MyPageCourseBookMarkDto::getCreatedDate).reversed())
                 .collect(Collectors.toList());
     }
 
     public Member isMember(String email) {
-        return memberRepository.findByEmail(email)
+        return memberRepository.findByEmailAndDeletedDateIsNull(email)
                 .orElseThrow(() -> new MemberNotFoundException());
     }
 
@@ -117,7 +119,7 @@ public class MyPageService {
         return false;
     }
 
-    public void deleteMember(Member member){
+    public void updateDeletedDate(Member member){
         memberRepository.delete(member);
     }
 

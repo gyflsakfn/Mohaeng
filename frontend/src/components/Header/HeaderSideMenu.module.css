@@ -1,0 +1,111 @@
+.mobileMenu {
+  position: fixed;
+  top: 0;
+  right: 0; /* 시작 위치 */
+  width: 38vw;
+  height: 100vh;
+  background-color: var(--color-white);
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+  padding: 1.4rem 0.4rem;
+}
+
+.menu-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0 0.2rem;
+}
+
+.logo-wrapper {
+  display: flex;
+  justify-content: center;
+  position: relative;
+  height: 40px;
+}
+.logo {
+  cursor: pointer;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  /* object-position: center; */
+}
+
+.close-icon {
+  font-size: 1.4rem;
+}
+
+.user-wrapper {
+  margin: 1.4rem 0.1rem 0.8rem;
+  padding: 0.6rem 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-evenly;
+  border-top: 1px solid var(--color-border-light);
+  border-bottom: 1px solid var(--color-border-light);
+  gap: 0.4rem;
+}
+
+.my-btn {
+  background-color: var(--color-primary);
+  padding: 0.4rem 0.7rem;
+  border-radius: 5px;
+  border: none;
+}
+
+.login-wrapper {
+  margin: 1.4rem 0.1rem 0.8rem;
+  padding: 0.6rem 0;
+  border-top: 1px solid var(--color-border-light);
+  border-bottom: 1px solid var(--color-border-light);
+}
+
+.kakaoBtn {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-text-basic);
+  font-size: 1.1rem;
+  gap: 1rem;
+  padding: 0.6rem 0;
+  border: none;
+  padding: 1rem 0;
+  background-color: #fee601;
+  border-radius: 0.6rem;
+  cursor: pointer;
+}
+
+.logout-wrapper {
+  display: flex;
+  justify-content: flex-end;
+  border-top: 1px solid var(--color-border-light);
+  padding-top: 2rem;
+}
+.logout-btn {
+  display: flex;
+  align-items: center;
+  padding: 0.2rem 0.4rem;
+  cursor: pointer;
+  font-size: 00.9rem;
+  border: 1px solid var(--color-border-light);
+}
+
+/* MEDIA QUERIES (tablets) */
+@media screen and (max-width: 1024px) {
+}
+
+/* MEDIA QUERIES (phones) */
+@media screen and (max-width: 600px) {
+  .mobileMenu {
+    width: 58vw;
+  }
+  .my-btn {
+    background-color: var(--color-primary);
+    padding: 0.3rem 0.5rem;
+    border-radius: 5px;
+    border: none;
+  }
+}

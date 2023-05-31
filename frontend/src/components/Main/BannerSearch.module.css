@@ -3,56 +3,32 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 1rem 0;
 }
 
 .banner-search-container {
   position: relative;
-  width: 1200px;
-  height: 320px;
+  width: 100%;
+  height: 350px;
 }
 
 .banner-image {
   width: 100%;
   height: 100%;
-  border-radius: 12px;
+  border-radius: 8px;
   object-fit: cover;
   object-position: bottom;
-  box-shadow: 3px -3px 3px rgba(0, 0, 0, 0.2);
+  box-shadow: 3px 4px 3px rgba(0, 0, 0, 0.2);
 }
-.banner-input-container {
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  top: 0;
-  display: flex;
-  align-items: center;
+/* MEDIA QUERIES (tablets) */
+@media screen and (max-width: 1024px) {
+  .banner-search-container {
+    height: 240px;
+  }
 }
 
-.banner-input-form {
-  width: 100%;
-  position: relative;
-  text-align: center;
-}
-
-.banner-input-icon {
-  position: absolute;
-  top: 50%;
-  transform: translateY(-40%) translateX(1.2rem);
-  font-size: 1.4rem;
-}
-
-.banner-input {
-  width: 60%;
-  font-size: 1.2rem;
-  height: 60px;
-  padding-left: 3.4rem;
-  border-radius: 1.7rem;
-  box-shadow: none;
-  outline: none;
-  border: none;
-}
-
-.banner-input::placeholder {
-  transform: translateY(0.18rem);
+/* MEDIA QUERIES (phones) */
+@media screen and (max-width: 600px) {
+  .banner-search-container {
+    height: 180px;
+  }
 }

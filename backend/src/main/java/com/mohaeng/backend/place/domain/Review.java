@@ -23,20 +23,17 @@ public class Review extends BaseTimeEntity {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "PLACE_ID")
+    @JoinColumn(name = "place_id")
     private Place place;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "MEMBER_ID")
+    @JoinColumn(name = "member_id")
     private Member member;
 
     private String nickname;
     private String title;
     private String content;
     private String rating;
-    private int totalPages;
-    private long totalElements;
-
     @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDateTime createdDate;
 

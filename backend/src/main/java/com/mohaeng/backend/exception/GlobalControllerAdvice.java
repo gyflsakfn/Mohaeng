@@ -47,7 +47,7 @@ public class GlobalControllerAdvice {
 
     /** @RequestBody @Valid exception 처리 **/
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<ExceptionResponse> handleValidationException(final MethodArgumentNotValidException e) {
+    public ResponseEntity<ExceptionResponse> handleValidationException(MethodArgumentNotValidException e) {
         log.info(LOG_FORMAT, e.getClass().getSimpleName(), INVALID_REQUEST_BODY, e.getMessage());
         return ResponseEntity.badRequest()
                 .body(ExceptionResponse.from(INVALID_REQUEST_BODY, "필수값이 입력되지 않았습니다."));

@@ -4,7 +4,7 @@ export interface LoginState {
   // isLoading: string;
   // isLoggedin: boolean;
 
-  id: number;
+  id: number | null;
   token: string;
   nickName: string;
   email: string;
@@ -14,7 +14,7 @@ export interface LoginState {
 const initialState: LoginState = {
   // isLoading: "loading",
   // isLoggedin: false,
-  id: 0,
+  id: null,
   token: "",
   nickName: "",
   email: "",
@@ -40,9 +40,16 @@ export const logintokenSlice = createSlice({
     setImgUrl: (state, action) => {
       state.imgUrl = action.payload;
     },
+    resetLog: (state) => {
+      state.id = null;
+      state.token = "";
+      state.nickName = "";
+      state.email = "";
+      state.imgUrl = "";
+    },
   },
 });
 
-export const { setToken, setNickname, setEmail, setId, setImgUrl } =
+export const { setToken, setNickname, setEmail, setId, setImgUrl, resetLog } =
   logintokenSlice.actions;
 export default logintokenSlice.reducer;

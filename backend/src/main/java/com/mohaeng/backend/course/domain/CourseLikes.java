@@ -29,18 +29,11 @@ public class CourseLikes extends BaseTimeEntity {
     @JoinColumn(name = "member_id")
     private Member member;
 
-    private LocalDateTime deletedDate;
-
     @Builder
-    public CourseLikes(Long id, Course course, Member member, LocalDateTime createdDate, LocalDateTime deletedDate) {
+    public CourseLikes(Long id, Course course, Member member, LocalDateTime createdDate) {
         this.id = id;
         this.course = course;
         this.member = member;
-        this.deletedDate = deletedDate;
-    }
-
-    public void updateDeleteDate(){
-        this.deletedDate = LocalDateTime.now();
     }
 
     public static CourseLikes of(Member member, Course course){

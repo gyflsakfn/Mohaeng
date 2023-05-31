@@ -7,10 +7,11 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 
+import java.util.List;
+
 public interface CourseBookmarkRepository extends JpaRepository<CourseBookmark, Long> {
     boolean existsCourseBookmarkByMemberAndCourse(Member member, Course course);
-
     boolean existsCourseBookmarkByMemberAndId(Member member, Long id);
     CourseBookmark findByMemberAndCourse(Member member, Course course);
-
+    List<CourseBookmark> findAllByCourse(Course course);
 }

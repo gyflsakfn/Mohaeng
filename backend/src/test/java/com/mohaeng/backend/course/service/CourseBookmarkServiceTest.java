@@ -71,7 +71,7 @@ class CourseBookmarkServiceTest {
         courseBookmarkService.addBookmark(courseId, savedMember.getEmail());
 
         //Then
-        Member member = memberRepository.findByEmail(savedMember.getEmail()).orElseThrow(null);
+        Member member = memberRepository.findByEmailAndDeletedDateIsNull(savedMember.getEmail()).orElseThrow(null);
         List<CourseBookmark> courseBookMarkList = member.getCourseBookMarkList();
         assertEquals(1, courseBookMarkList.size());
     }
@@ -150,7 +150,7 @@ class CourseBookmarkServiceTest {
         courseBookmarkService.cancelBookmark(courseId, savedMember.getEmail());
 
         //Then
-        Member member = memberRepository.findByEmail(savedMember.getEmail()).orElseThrow(null);
+        Member member = memberRepository.findByEmailAndDeletedDateIsNull(savedMember.getEmail()).orElseThrow(null);
         List<CourseBookmark> courseBookMarkList = member.getCourseBookMarkList();
         assertEquals(0, courseBookMarkList.size());
     }

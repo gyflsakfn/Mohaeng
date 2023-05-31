@@ -1,14 +1,13 @@
-import { CourseDetailType } from "@/src/interfaces/Course";
-import {
-  deleteCourseApi,
-  getCourseListApi,
-  toggleBookmarkApi,
-  toggleLikeApi,
-} from "@/src/services/courseService";
-import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import { createSlice } from "@reduxjs/toolkit";
 import { ICoursePlaceName } from "../../interfaces/Course.type";
-import { RootState } from "../store";
-import { createCourseAction, editCourseAction } from "./CourseFormSlice";
+import {
+  getCourseListAction,
+  bookmarkToggleAction,
+  likeToggleAction,
+  removeCourseAction,
+  createCourseAction,
+  editCourseAction,
+} from "../thunks/courseThunks";
 
 interface CourseState {
   error?: string;
@@ -25,65 +24,6 @@ export interface ToggleLikeApiResponse {
 const initialState: CourseState = {
   courseList: [],
 };
-export const getCourseListAction = createAsyncThunk(
-  "course/getCourseListAction",
-  async (queryParams: any, { rejectWithValue }) => {
-    try {
-      const response = await getCourseListApi(queryParams);
-      return response.data.data;
-    } catch (error: any) {
-      return rejectWithValue(error.response.data);
-    }
-  }
-);
-export const removeCourseAction = createAsyncThunk(
-  "course/removeCourseAction",
-  async (courseId: number, { rejectWithValue }) => {
-    try {
-      await deleteCourseApi(courseId);
-      return courseId;
-    } catch (error: any) {
-      return rejectWithValue(error.response.data);
-    }
-  }
-);
-
-export const listBookmarkToggleAction = createAsyncThunk(
-  "course/listToggleBookmark",
-  async (courseId: number, { getState }) => {
-    const courseState = (await getState()) as RootState;
-    const courseList = courseState.course.courseList;
-    const course = courseList.find((course) => course.courseId === courseId);
-    const isBookmarked = course ? course.isBookmarked : false;
-    if (isBookmarked) {
-      await toggleBookmarkApi(courseId, "DELETE");
-      console.log("목록 북마크 제거");
-    } else {
-      await toggleBookmarkApi(courseId, "POST");
-      console.log("목록 북마크 추가");
-    }
-    return courseId;
-  }
-);
-
-export const listLikeToggleAction = createAsyncThunk(
-  "course/listToggleLike",
-  async (courseId: number, { getState }) => {
-    const courseState = (await getState()) as RootState;
-    const courseList = courseState.course.courseList;
-    const course = courseList.find((course) => course.courseId === courseId);
-    const isLiked = course ? course.isLiked : false;
-    let resData: ToggleLikeApiResponse;
-    if (isLiked) {
-      resData = await toggleLikeApi(courseId, "DELETE");
-      console.log("목록 좋아요 해제");
-    } else {
-      resData = await toggleLikeApi(courseId, "POST");
-      console.log("목록 좋아요 추가");
-    }
-    return resData;
-  }
-);
 
 export const CourseListSlice = createSlice({
   name: "course",
@@ -115,25 +55,76 @@ export const CourseListSlice = createSlice({
       state.totalPages = totalPages;
     });
     builder.addCase(getCourseListAction.rejected, (state) => {});
-    builder.addCase(listBookmarkToggleAction.pending, (state) => {});
-    builder.addCase(listBookmarkToggleAction.fulfilled, (state, action) => {
-      const courseId = action.payload;
-      const course = state.courseList.find((c) => c.courseId === courseId);
-      if (course) {
-        course.isBookmarked = !course.isBookmarked;
+
+    builder.addCase(bookmarkToggleAction.pending, (state, action) => {
+      const { courseId, isDetailPage } = action.meta.arg;
+      if (isDetailPage || isDetailPage === undefined) return;
+
+      const courseIndex = state.courseList.findIndex(
+        (c) => c.courseId === courseId
+      );
+      if (courseIndex !== -1) {
+        state.courseList[courseIndex].isBookmarked =
+          !state.courseList[courseIndex].isBookmarked;
       }
     });
-    builder.addCase(listBookmarkToggleAction.rejected, (state) => {});
-    builder.addCase(listLikeToggleAction.pending, (state) => {});
-    builder.addCase(listLikeToggleAction.fulfilled, (state, action) => {
-      const { courseId, totalLikes } = action.payload;
-      const course = state.courseList.find((c) => c.courseId === courseId);
-      if (course) {
-        course.isLiked = !course.isLiked;
-        course.likeCount = totalLikes;
+
+    builder.addCase(bookmarkToggleAction.fulfilled, (state, action) => {
+      // TODO: fulfilled와 rejected일때 수정
+    });
+    builder.addCase(bookmarkToggleAction.rejected, (state) => {
+      window.alert("북마크 실패");
+    });
+    builder.addCase(likeToggleAction.pending, (state, action) => {
+      const { courseId, isDetailPage, isLiked } = action.meta.arg;
+
+      if (isDetailPage || isDetailPage === undefined) return;
+
+      if (state.courseList.length > 0) {
+        const courseIndex = state.courseList.findIndex(
+          (c) => c.courseId === courseId
+        );
+        if (courseIndex !== -1) {
+          if (isLiked) {
+            state.courseList[courseIndex].isLiked = false;
+            state.courseList[courseIndex].likeCount -= 1;
+          } else {
+            state.courseList[courseIndex].isLiked = true;
+            state.courseList[courseIndex].likeCount += 1;
+          }
+        }
       }
     });
-    builder.addCase(listLikeToggleAction.rejected, (state) => {});
+    builder.addCase(likeToggleAction.fulfilled, (state, action) => {
+      const { courseId, totalLikes, isDetailPage } = action.payload;
+      if (isDetailPage || isDetailPage === undefined) return;
+
+      if (state.courseList.length > 0) {
+        const courseIndex = state.courseList.findIndex(
+          (c) => c.courseId === courseId
+        );
+        if (courseIndex !== -1) {
+          state.courseList[courseIndex].likeCount = totalLikes;
+        }
+      }
+    });
+    builder.addCase(likeToggleAction.rejected, (state, action) => {
+      const { courseId, isDetailPage } = action.meta.arg;
+      if (isDetailPage || isDetailPage === undefined) return state;
+
+      if (state.courseList.length > 0) {
+        const courseIndex = state.courseList.findIndex(
+          (c) => c.courseId === courseId
+        );
+        if (courseIndex !== -1) {
+          state.courseList[courseIndex].isLiked =
+            !state.courseList[courseIndex].isLiked;
+          state.courseList[courseIndex].likeCount =
+            state.courseList[courseIndex].likeCount - 1;
+        }
+      }
+      window.alert("좋아요 실패");
+    });
     builder.addCase(removeCourseAction.pending, (state) => {});
     builder.addCase(removeCourseAction.fulfilled, (state, action) => {
       const newList = state.courseList?.filter(

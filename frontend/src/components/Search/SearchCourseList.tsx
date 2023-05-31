@@ -5,7 +5,7 @@ import Pagebar from "../Pagenation/Pagebar";
 import ListContainer from "../UI/ListContainer";
 import { useAppDispatch, useAppSelector } from "@/src/hooks/useReduxHooks";
 import { setPage } from "@/src/store/reducers/pageSlice";
-import { getCourseListAction } from "@/src/store/reducers/CourseListSlice";
+import { getCourseListAction } from "@/src/store/thunks/courseThunks";
 
 interface CourseList {
   courseId: number;
@@ -20,9 +20,7 @@ interface CourseList {
 }
 
 export default function SearchCourseList(): JSX.Element {
-  const { courseList, totalElements, totalPages } = useAppSelector(
-    (state) => state.course
-  );
+  const { courseList, totalPages } = useAppSelector((state) => state.course);
   const { keyword } = useAppSelector((state) => state.filter);
   const page = useAppSelector((state) => state.page.page);
   const dispatch = useAppDispatch();
@@ -41,7 +39,7 @@ export default function SearchCourseList(): JSX.Element {
       <section className={styles.section}>
         <h3 className={styles.h3}>검색하신 결과: {keyword} </h3>
         <ul className={styles.keywordList}>
-          {courseList.length > 0 ? (
+          {courseList?.length > 0 ? (
             <ListContainer>
               {courseList?.map((course) => (
                 <CourseItem

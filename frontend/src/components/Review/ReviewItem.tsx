@@ -1,16 +1,11 @@
 import styles from "./ReviewItem.module.css";
-import cookie from "react-cookies";
 import Image from "next/image";
 import FiveStarRating from "../FiveStarRating/FiveStarRating";
 import { useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import { RootState } from "@/src/store/store";
 import { useRouter } from "next/router";
-import { openModal } from "@/src/store/reducers/modalSlice";
-import axios from "axios";
-
-// 별점, 아이디, 작성일, 리뷰내용, 이미지
-// 유저일 경우 수정 삭제 버튼
+import { useRouterQuery } from "@/src/hooks/useRouterQuery";
 
 type ReviewProps = {
   reviewId: number;
@@ -20,6 +15,7 @@ type ReviewProps = {
   imgUrl: string[];
   rating: string;
   createdDate: string;
+  onDelete: (reviewId: number) => void;
 };
 
 export default function ReviewItem({
@@ -30,48 +26,18 @@ export default function ReviewItem({
   content,
   createdDate,
   imgUrl,
+  onDelete,
 }: ReviewProps) {
   const router = useRouter();
-  const { placeId, name } = router.query;
-  const [user, setUser] = useState();
   const currentUser = useSelector(
     (state: RootState) => state.nickName.nickName
   );
-  const dispatch = useDispatch();
-  // setUser(currentUser);
   const isUser = nickname === currentUser;
   const [isExpanded, setIsExpanded] = useState(false);
+  const id = useRouterQuery("id");
 
-  const handleOpenDeleteModal = () => {
-    dispatch(
-      openModal({
-        modalType: "DeleteReviewModal",
-        isOpen: true,
-        reviewId: reviewId,
-      })
-    );
-  };
-
-  const deleteReview = async () => {
-    const confirmed = window.confirm("리뷰를 삭제하시겠습니까?");
-    if (confirmed) {
-      try {
-        const accessToken = await cookie.load("accessToken");
-        const response = await axios.delete(
-          `${process.env.NEXT_PUBLIC_API_URL}/api/review/detail/${reviewId}`,
-          {
-            headers: {
-              "Access-Token": accessToken,
-            },
-          }
-        );
-        console.log(response.status);
-        console.log(response.data);
-        router.push(`/search?keyword=${name}`);
-      } catch (error) {
-        console.error(error);
-      }
-    }
+  const handleDelete = () => {
+    onDelete(reviewId);
   };
 
   const toggleExpand = () => {
@@ -93,30 +59,25 @@ export default function ReviewItem({
             <FiveStarRating rating={rating.toString()} />
           </div>
           <p className={styles.reviewerId}>
-            {nickname} | {createdDate}
+            {nickname}&nbsp;|&nbsp;{createdDate}
           </p>
         </div>
         {isUser ? (
           <div className={styles.btnGroup}>
             <button
               onClick={() =>
-                router.push(
-                  {
-                    pathname: `/review/edit-review`,
-                    query: {
-                      plcaceId: placeId,
-                      reviewId: reviewId,
-                      name: name,
-                    },
+                router.push({
+                  pathname: `/review/edit-review/${id}`,
+                  query: {
+                    reviewId: reviewId,
                   },
-                  `/review/edit-review`
-                )
+                })
               }
               className={styles.btn}
             >
               수정
             </button>
-            <button onClick={deleteReview} className={styles.btn}>
+            <button onClick={handleDelete} className={styles.btn}>
               삭제
             </button>
           </div>
@@ -147,7 +108,7 @@ export default function ReviewItem({
             </div>
           ) : (
             <div>
-              <p className={styles.reviewTxt}>{content.substring(0, 50)}...</p>
+              <p className={styles.reviewTxt}>{content.substring(0, 70)}...</p>
               <button onClick={toggleExpand} className={styles.showMoreBtn}>
                 더 보기
               </button>
@@ -161,9 +122,10 @@ export default function ReviewItem({
                 {imgUrl.map((imgUrl, index) => (
                   <div className={styles.reviewImg} key={index}>
                     <Image
+                      className={styles.reviewImgUrl}
                       src={imgUrl}
-                      width={200}
-                      height={180}
+                      width={230}
+                      height={200}
                       alt={`img-${index}`}
                     />
                   </div>
@@ -175,11 +137,4 @@ export default function ReviewItem({
       </div>
     </article>
   );
-}
-
-{
-  /* <button className={styles.likeBtn}>
-          <FaRegThumbsUp />
-          {likeCount}
-        </button> */
 }

@@ -58,7 +58,7 @@ public class CourseBookmarkService {
 
         // 4. 해당 CourseBookmark 찾아서, deletedDate update & member의 courseBookMarkList에서 제거
         CourseBookmark courseBookmark = courseBookmarkRepository.findByMemberAndCourse(member, course);
-        courseBookmark.updateDeleteDate();
+        courseBookmark.updateDeletedDate();
         member.removeCourseBookMark(courseBookmark);
     }
 
@@ -75,7 +75,7 @@ public class CourseBookmarkService {
     }
 
     private Member isMember(String memberEmail){
-        return memberRepository.findByEmail(memberEmail).orElseThrow(MemberNotFoundException::new);
+        return memberRepository.findByEmailAndDeletedDateIsNull(memberEmail).orElseThrow(MemberNotFoundException::new);
     }
 
     private Course isCourse(Long id){

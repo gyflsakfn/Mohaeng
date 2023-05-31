@@ -1,4 +1,5 @@
 import "../styles/globals.css";
+import "../styles/globals_media.css";
 import "../styles/slider.css";
 import { AppProps } from "next/app";
 import Head from "next/head";
@@ -24,7 +25,12 @@ function MyApp({ Component, pageProps: { ...pageProps } }: AppProps) {
       `}</style>
       <Head>
         <title>모두의 여행</title>
-        <meta content="width=device-width, initial-scale=1" name="viewport" />
+        <meta
+          name="viewport"
+          content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+        />
+        <meta charSet="utf-8"></meta>
+        <link rel="icon" href="/favicon.ico" />
       </Head>
 
       <Provider store={store}>
@@ -38,34 +44,3 @@ function MyApp({ Component, pageProps: { ...pageProps } }: AppProps) {
 }
 
 export default MyApp;
-
-// _app.tsx에서 전역으로 getInitialProps를 적용하게 되면, 모든 페이지가 서버 사이드 렌더링이 됨 (자동최적화 불가)
-// MyApp.getInitialProps = async (appContext: AppContext) => {
-//   const appProps = await App.getInitialProps(appContext);
-//   // 서버 사이드 쿠키 얻어오기
-//   console.log(ctx);
-//   try {
-//     const response = await axios.get(
-//       `http://localhost:8080/oauth/token/refresh`,
-//       {
-//         headers: {
-//           "Refresh-Token": `${refreshToken}`,
-//         },
-//         withCredentials: true,
-//       }
-//     );
-//     const accessToken = response.data;
-//     console.log(response);
-//     ctx.res?.setHeader("set-cookie", `accessToken=${accessToken}; path=/;`);
-//   } catch (err: any) {
-//     console.log(err);
-//   }
-//   const allCookies = cookies(ctx);
-//   const accessTokenByCookie = allCookies["accessToken"];
-//   if (accessTokenByCookie !== undefined) {
-//     const refreshTokenByCookie = allCookies["refreshToken"] || "";
-//     saveToken(accessTokenByCookie, refreshTokenByCookie);
-//   }
-
-//   return { ...appProps };
-// };

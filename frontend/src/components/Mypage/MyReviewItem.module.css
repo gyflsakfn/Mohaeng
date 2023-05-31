@@ -1,21 +1,26 @@
 .myReview-container {
+  width: 100%;
+  height: 100%;
   background-color: #f3f3f3;
   padding: 2rem;
   border-radius: 10px;
   display: flex;
   flex-direction: column;
   align-items: center;
-  height: 100%;
 }
+
 .myReview-item {
   display: flex;
   align-items: center;
-  width: 800px;
+  width: 100%;
   gap: 1rem;
+  box-sizing: border-box;
   margin-bottom: 1rem;
-  border: 1px solid var(--color-border-semi);
-  box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
-  border-radius: 18px;
+  border-bottom: 1px solid var(--color-border-light);
+  box-shadow: 0px 4px 6px 2px rgba(25, 25, 25, 0.25);
+  -webkit-box-shadow: 0px 4px 6px 2px rgba(25, 25, 25, 0.25);
+  -moz-box-shadow: 0px 4px 6px 2px rgba(25, 25, 25, 0.25);
+  border-radius: 12px;
   padding: 1rem;
 }
 
@@ -23,11 +28,15 @@
   width: 200px;
   height: 200px;
   object-fit: cover;
+  cursor: pointer;
+  border-radius: 12px;
 }
 
 .myReview-item div {
+  width: 100%;
   display: flex;
   flex-direction: column;
+  justify-content: center;
   gap: 0.5rem;
 }
 
@@ -37,5 +46,56 @@
 }
 
 .myReview-item p {
+  /* width: 100%; */
   margin: 0.2rem 0;
+}
+
+@media screen and (max-width: 1024px) {
+  .myReview-item {
+    width: 100%;
+  }
+
+  .myReview-item div {
+    width: 380px;
+  }
+}
+
+@media screen and (max-width: 800px) {
+  .myReview-item {
+    width: 100%;
+  }
+
+  .myReview-item div {
+    width: 70%;
+    gap: 0;
+  }
+
+  .img {
+    width: 100%;
+    height: 150px;
+  }
+}
+
+@media screen and (max-width: 600px) {
+  .myReview-item {
+    width: 100%;
+    flex-direction: column;
+  }
+
+  .myReview-item div {
+    width: 100%;
+  }
+
+  .myReview-item h2 {
+    font-size: medium;
+  }
+
+  .myReview-item p {
+    font-size: small;
+  }
+
+  .img {
+    width: 290px;
+    height: 180px;
+  }
 }

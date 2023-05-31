@@ -29,15 +29,10 @@ public class CoursePlace extends BaseTimeEntity {
     @JoinColumn(name = "place_id")
     private Place place;
 
-    private LocalDateTime deletedDate;
-
     @Builder
     public CoursePlace(Course course, Place place) {
         this.course = course;
         this.place = place;
     }
 
-    public void updateDeletedDate(){
-        this.deletedDate = LocalDateTime.now();
-    }
 }

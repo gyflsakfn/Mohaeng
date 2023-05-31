@@ -8,6 +8,7 @@ export default function Document() {
           type="text/javascript"
           src={`//dapi.kakao.com/v2/maps/sdk.js?appkey=${process.env.NEXT_PUBLIC_KAKAOMAP_APIKEY}&libraries=services`}
         />
+        <script src="https://developers.kakao.com/sdk/js/kakao.js"></script>
       </Head>
       <body>
         <Main />

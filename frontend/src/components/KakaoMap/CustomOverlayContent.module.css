@@ -15,7 +15,7 @@
 .title {
   display: block;
   text-align: center;
-  background: #fff;
+  background: var(--color-white);
   margin-right: 35px;
   padding: 10px 15px;
   font-size: 14px;

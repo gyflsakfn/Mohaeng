@@ -1,12 +1,11 @@
 "use client";
 import Link from "next/link";
 import styles from "./MyCourseItem.module.css";
-import { useState } from "react";
-import IsLikeState from "../UI/IsLikeState";
 import cookie from "react-cookies";
 import axios from "axios";
 import { getMyCourse } from "@/src/store/reducers/myCourseSlice";
 import { useAppDispatch } from "@/src/hooks/useReduxHooks";
+import { useEffect } from "react";
 
 export interface MyCourseItemProps {
   courseId: number;
@@ -30,17 +29,7 @@ const MyCourseItem = (myCourse: MyCourseItemProps) => {
     }`;
   };
   const accessToken = cookie.load("accessToken");
-
   const appDispatch = useAppDispatch();
-
-  // const toggleSwitchclassName =
-  //   myCourse.courseStatus === "PUBLIC"
-  //     ? `${styles["toggle-switch"]} ${styles.publish}`
-  //     : `${styles["toggle-switch"]} ${styles.private}`;
-  // const textclassName =
-  //   myCourse.courseStatus === "PUBLIC"
-  //     ? `${styles["toggle-switch-text"]} ${styles.publish}`
-  //     : `${styles["toggle-switch-text"]} ${styles.private}`;
 
   const clickToggle = () => {
     var ispublish: boolean = true;
@@ -84,7 +73,7 @@ const MyCourseItem = (myCourse: MyCourseItemProps) => {
           alt={myCourse.title}
         />
       </Link>
-      <div>
+      <div className={styles.courseItemInfo}>
         <button className={styles.publicButton} onClick={clickToggle}>
           {myCourse.courseStatus === "PUBLIC" ? (
             <p className={styles.public}>공개</p>

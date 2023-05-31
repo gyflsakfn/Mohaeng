@@ -4,16 +4,44 @@
   cursor: pointer;
   padding-left: 5rem;
   border-bottom: 1px solid var(--color-border-light);
+  color: var(--color-text-basic);
 }
 
 .subtab,
 .activetab {
-  margin-right: 3rem;
+  margin-right: 2rem;
   padding: 0 1rem 1rem 1rem;
   font-size: 20px;
+  border-bottom: 3px solid transparent;
 }
 
 .activetab {
+  transition: all ease-in-out 0.3s;
   font-weight: 700;
   border-bottom: 3px solid var(--color-blue);
+}
+
+.subtab {
+  color: var(--color-text-semi);
+}
+
+/* MEDIA QUERIES (tablets) */
+@media screen and (max-width: 1024px) {
+  .tabmenu {
+    padding-left: 3rem;
+  }
+}
+
+/* MEDIA QUERIES (middle) */
+@media screen and (max-width: 800px) {
+  .tabmenu {
+    padding-left: 2rem;
+  }
+}
+
+/* MEDIA QUERIES (phones) */
+@media screen and (max-width: 600px) {
+  .tabmenu {
+    padding-left: 1rem;
+  }
 }

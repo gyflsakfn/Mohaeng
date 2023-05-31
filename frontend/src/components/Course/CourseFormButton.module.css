@@ -1,0 +1,28 @@
+.button-wrapper {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.btn {
+  padding: 0.7rem 0;
+  font-size: 1.2rem;
+  border-radius: 5px;
+  cursor: pointer;
+  color: var(--color-text-basic);
+  font-weight: 600;
+  margin-bottom: 0.4rem;
+  transition: 0.3s;
+  border: none;
+}
+.cancel-btn {
+  width: 80px;
+}
+.submit-btn {
+  width: 200px;
+  background-color: var(--color-green);
+}
+.btn:hover {
+  transform: translateY(5px);
+}

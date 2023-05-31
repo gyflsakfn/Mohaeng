@@ -31,7 +31,6 @@ const MyPage: React.FC = () => {
           multipartFile: null,
           withCredentials: true,
         })
-        .then((res) => console.log(res));
     };
     response();
     router.push("/mypage");

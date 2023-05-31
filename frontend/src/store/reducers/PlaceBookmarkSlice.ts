@@ -31,7 +31,6 @@ export const getPlaceBookmark = createAsyncThunk(
       },
       withCredentials: true,
     });
-    // console.log(response.data.data);
     return response.data.data;
   }
 );
@@ -42,14 +41,11 @@ export const PlaceBookmarkSlice = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     builder.addCase(getPlaceBookmark.pending, (state) => {
-      // state.createUserFormStatus = ApiStatus.loading;
     });
     builder.addCase(getPlaceBookmark.fulfilled, (state, action) => {
-      // state.createUserFormStatus = ApiStatus.success;
       state.data = action.payload;
     });
     builder.addCase(getPlaceBookmark.rejected, (state) => {
-      // state.createUserFormStatus = ApiStatus.error;
     });
   },
 });

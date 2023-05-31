@@ -1,18 +1,16 @@
 import styles from "./SearchPlaceList.module.css";
-
-import { useEffect, useState } from "react";
-import { useRouter } from "next/router";
-
 import axios from "axios";
 import cookie from "react-cookies";
+import SearchItem from "./SearchItem";
+import Pagebar from "../Pagenation/Pagebar";
+import ListContainer from "../UI/ListContainer";
+import { useEffect, useState } from "react";
+import { useRouter } from "next/router";
 import { Keyword } from "@/src/interfaces/Keyword";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/src/store/store";
-import SearchItem from "./SearchItem";
-import Pagebar from "../Pagenation/Pagebar";
 import { setSearchPlace } from "@/src/store/reducers/searchPlaceSlice";
 import { setPage } from "@/src/store/reducers/pageSlice";
-import ListContainer from "../UI/ListContainer";
 
 export default function SearchPlaceList(): JSX.Element {
   const [searchResult, setSearchResult] = useState<Keyword[]>([]);
@@ -60,7 +58,6 @@ export default function SearchPlaceList(): JSX.Element {
         setPage(totalPages);
         const { content } = res.data.data;
         setSearchResult(content);
-        console.log(content);
       } catch (error) {
         console.log("Error", error);
       }
@@ -75,7 +72,7 @@ export default function SearchPlaceList(): JSX.Element {
       <section className={styles.section}>
         <h3 className={styles.h3}>검색하신 결과: {keyword} </h3>
         <ul className={styles.keywordList}>
-          {searchResult.length > 0 ? (
+          {searchResult?.length > 0 ? (
             <ListContainer>
               {searchResult?.map((place) => (
                 <SearchItem

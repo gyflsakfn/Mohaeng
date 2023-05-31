@@ -57,8 +57,6 @@ public class PlaceBookmarkService {
         return PlaceBookmarkResponse.from(placeId, member.getId());
     }
 
-
-
     public boolean isExistPlaceBookmark(Long placeId, String memberEmail) {
         // 유저 확인 & 장소 확인
         Member member = isMember(memberEmail);
@@ -73,7 +71,7 @@ public class PlaceBookmarkService {
 
 
     private Member isMember(String memberEmail){
-        return memberRepository.findByEmail(memberEmail).orElseThrow(
+        return memberRepository.findByEmailAndDeletedDateIsNull(memberEmail).orElseThrow(
                 // TODO: Exception 처리
                 () -> new IllegalArgumentException("존재하지 않는 member 입니다.")
         );

@@ -1,0 +1,46 @@
+:root {
+  --explore_padding-inline: 2rem;
+  --Layout_padding-inline: 1rem 2rem 4rem;
+}
+
+/* MEDIA QUERIES (tablets) */
+@media screen and (max-width: 1024px) {
+  :root {
+    --explore_padding-inline: 1.6rem;
+  }
+}
+
+/* MEDIA QUERIES (middle) */
+@media screen and (max-width: 800px) {
+  :root {
+    --explore_padding-inline: 1.1rem;
+  }
+}
+
+/* MEDIA QUERIES (phones) */
+@media screen and (max-width: 600px) {
+  :root {
+    --explore_padding-inline: 0.8rem;
+  }
+  h1 {
+    font-size: 1.6rem;
+  }
+
+  h2 {
+    font-size: 1.3rem;
+  }
+
+  h3 {
+    font-size: 1.1rem;
+  }
+
+  h4 {
+    font-size: 1rem;
+  }
+  h5 {
+    font-size: 0.8rem;
+  }
+  h6 {
+    font-size: 0.7rem;
+  }
+}

@@ -62,7 +62,7 @@ const PlaceDetailMap = ({ latitude, longitude }: DetailMapProps) => {
       id="map"
       style={{
         width: "400px",
-        height: "350px",
+        height: "300px",
       }}
     ></div>
   );

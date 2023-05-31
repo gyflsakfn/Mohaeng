@@ -2,6 +2,7 @@ package com.mohaeng.backend.place.service;
 
 import com.mohaeng.backend.Image.AmazonS3Service;
 import com.mohaeng.backend.exception.notfound.MemberNotFoundException;
+import com.mohaeng.backend.exception.notfound.PlaceNotFoundException;
 import com.mohaeng.backend.exception.notfound.ReviewNotFoundException;
 import com.mohaeng.backend.member.domain.Member;
 import com.mohaeng.backend.member.repository.MemberRepository;
@@ -11,13 +12,16 @@ import com.mohaeng.backend.place.domain.ReviewImage;
 import com.mohaeng.backend.place.dto.request.CreateReviewRequest;
 import com.mohaeng.backend.place.dto.request.UpdateReviewRequest;
 import com.mohaeng.backend.place.dto.response.FindAllReviewResponse;
-import com.mohaeng.backend.place.exception.PlaceNotFoundException;
 import com.mohaeng.backend.place.repository.PlaceRepository;
 import com.mohaeng.backend.place.repository.ReviewImageRepository;
 import com.mohaeng.backend.place.repository.ReviewRepository;
 import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.*;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -31,6 +35,7 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class ReviewService {
 
     private final PlaceRepository placeRepository;
@@ -44,18 +49,15 @@ public class ReviewService {
 
     public List<FindAllReviewResponse> getAllReview(Long id) {
         Place findPlace = placeRepository.findById(id)
-                .orElseThrow(() -> new PlaceNotFoundException("NOT_EXIST_PLACE"));
+                .orElseThrow(() -> new PlaceNotFoundException());
 
         return findPlace.getReviewList().stream()
-                .map(m -> FindAllReviewResponse.of(m))
+                .map(m -> FindAllReviewResponse.of(m,findPlace))
                 .collect(Collectors.toList());
     }
 
 
     public Page<Review> getAllReviewByPage(Long id, int page) {
-        Place findPlace = placeRepository.findById(id)
-                .orElseThrow(() -> new PlaceNotFoundException("NOT_EXIST_PLACE"));
-
         Pageable pageable = PageRequest.of(page - 1, 4);
         Page<Review> reviews = reviewRepository.findAllByPlaceId(id, pageable);
 //        List<FindAllReviewResponse> reviewResponses = reviews.map(FindAllReviewResponse::of).getContent();
@@ -75,8 +77,8 @@ public class ReviewService {
     @Transactional
     public void createReview(String email, Long placeId, CreateReviewRequest createReviewRequest, List<String> fileNameList) {
         Place findPlace = placeRepository.findById(placeId)
-                .orElseThrow(() -> new PlaceNotFoundException("NOT_EXIST_PLACE"));
-        Member findMember = memberRepository.findByEmail(email)
+                .orElseThrow(() -> new PlaceNotFoundException());
+        Member findMember = memberRepository.findByEmailAndDeletedDateIsNull(email)
                 .orElseThrow(() -> new MemberNotFoundException());
 
         LocalDateTime createdDate = createReviewRequest.getCreatedDate();
@@ -86,7 +88,6 @@ public class ReviewService {
         }
 
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-        String formattedCreatedDate = createdDate.format(formatter);
         Review review = Review.builder()
                 .place(findPlace)
                 .member(findMember)
@@ -101,9 +102,13 @@ public class ReviewService {
         findMember.addReview(review);
         findPlace.addReview(review);
 
+        double averageRating = reviewRepository.getAverageRatingByPlaceId(placeId);
+        findPlace.updateRating(averageRating);
+        placeRepository.save(findPlace);
         if (fileNameList != null && !fileNameList.isEmpty()) {
             registerImage(fileNameList, review);
         }
+
         entityManager.flush();
         entityManager.clear();
     }
@@ -126,10 +131,13 @@ public class ReviewService {
     }
 
     @Transactional
-    public void updateReview(Long placeId, UpdateReviewRequest updateReviewRequest, List<String> fileNameList) {
-        Review review = reviewRepository.findById(placeId)
-                .orElseThrow(() -> new ReviewNotFoundException());
+    public void updateReview(Long reviewId, UpdateReviewRequest updateReviewRequest, List<String> fileNameList) {
+        Review review = reviewRepository.findById(reviewId)
+                .orElseThrow(ReviewNotFoundException::new);
         review.update(updateReviewRequest.getTitle(), updateReviewRequest.getContent(), updateReviewRequest.getRating());
+
+        Place findPlace = placeRepository.findById(review.getPlace().getId())
+                .orElseThrow(PlaceNotFoundException::new);
 
         // Delete existing images
         for (ReviewImage reviewImage : review.getReviewImageList()) {
@@ -141,16 +149,20 @@ public class ReviewService {
         if (fileNameList != null) {
             registerImage(fileNameList, review);
         }
-//        registerImage(fileNameList, review); JPA 1차 캐시 문제 해결.
+        double averageRating = reviewRepository.getAverageRatingByPlaceId(review.getPlace().getId());
+        findPlace.updateRating(averageRating);
+        reviewRepository.save(review);
+        placeRepository.save(findPlace);
         entityManager.flush();
         entityManager.clear();
     }
 
     @Transactional
-    public void deleteReview(Long reviewId) {
+    public void deleteReview(Long reviewId, Long placeId) {
         Review review = reviewRepository.findById(reviewId)
-                .orElseThrow(() -> new ReviewNotFoundException());
-
+                .orElseThrow(ReviewNotFoundException::new);
+        Place findPlace = placeRepository.findById(placeId)
+                .orElseThrow(PlaceNotFoundException::new);
 
         // Delete images from storage service
         for (ReviewImage reviewImage : review.getReviewImageList()) {
@@ -162,16 +174,15 @@ public class ReviewService {
 
         // Delete review and related images from database
         reviewRepository.delete(review);
-        // Clear JPA cache
+        double averageRating = reviewRepository.getAverageRatingByPlaceId(placeId);
+        findPlace.updateRating(averageRating);
+        placeRepository.save(findPlace);
         entityManager.flush();
         entityManager.clear();
     }
 
-    public double getAverageRating(List<Review> reviews) {
-        return reviews.stream()
-                .mapToDouble(r -> Double.parseDouble(r.getRating()))
-                .average()
-                .orElse(0.0);
+    public double getAverageRating(Place place) {
+        return reviewRepository.getAverageRatingByPlaceId(place.getId());
     }
 
     public Review getReviewById(Long reviewId) {
@@ -203,4 +214,5 @@ public class ReviewService {
         Pageable pageable = PageRequest.of(page - 1, 4, Sort.by("createdDate").descending());
         return reviewRepository.findAllByPlaceId(placeId, pageable);
     }
+
 }

@@ -1,5 +1,5 @@
 .content {
-  padding: 2rem 0 2rem;
+  margin-bottom: 0.6rem;
 }
 
 .info {
@@ -8,4 +8,22 @@
   position: relative;
   gap: 0.6rem;
   padding-top: 1rem;
+}
+
+/* MEDIA QUERIES (tablets) */
+@media screen and (max-width: 1024px) {
+  .info {
+    flex-direction: column;
+    height: 110vh;
+  }
+  .content {
+    margin-bottom: 0.4rem;
+  }
+}
+
+/* MEDIA QUERIES (phones) */
+@media screen and (max-width: 600px) {
+  .content {
+    margin-bottom: 0.3rem;
+  }
 }

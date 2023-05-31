@@ -14,15 +14,22 @@ import {
 import RoughMap from "./RoughMap";
 
 import TagItem from "../UI/TagItem";
-import { useAppDispatch } from "@/src/hooks/useReduxHooks";
+import { useAppDispatch, useAppSelector } from "@/src/hooks/useReduxHooks";
 import {
-  listBookmarkToggleAction,
-  listLikeToggleAction,
-} from "@/src/store/reducers/CourseListSlice";
-import { getCourseBookmark } from "@/src/store/reducers/CourseBoomarkSlice";
-import cookie from "react-cookies";
+  bookmarkToggleAction,
+  likeToggleAction,
+} from "@/src/store/thunks/courseThunks";
 import { useRouter } from "next/router";
 import IsLikeState from "../UI/IsLikeState";
+import { openModal } from "@/src/store/reducers/modalSlice";
+import { kakaoShare } from "@/src/utils/kakao-share";
+import { resetCourseDetail } from "@/src/store/reducers/CourseDetailSlice";
+
+declare global {
+  interface Window {
+    Kakao: any;
+  }
+}
 
 const CourseItem = ({
   courseId,
@@ -36,8 +43,12 @@ const CourseItem = ({
   places,
 }: CourseListProps) => {
   const [isRoughMapOpen, setIsRoughMapOpen] = useState(false);
+  const [isBookmarkHandlerRunning, setIsBookmarkHandlerRunning] =
+    useState(false);
+  const [isLikeHandlerRunning, setIsLikeHandlerRunning] = useState(false);
+
+  const { id: userId } = useAppSelector((state) => state.token);
   const dispatch = useAppDispatch();
-  const accessToken = cookie.load("accessToken");
   const router = useRouter();
 
   const toggleRoughMapHandler = (e: React.MouseEvent<HTMLDivElement>): void => {
@@ -49,21 +60,81 @@ const CourseItem = ({
     setIsRoughMapOpen(false);
   };
 
-  const bookmarkHandler = (id: number) => {
-    dispatch(listBookmarkToggleAction(id)).then(() => {
-      dispatch(getCourseBookmark(accessToken));
-    });
+  const handleToggleBookmark = () => {
+    if (isBookmarkHandlerRunning) {
+      return; // 핸들러가 실행 중이면 새로운 이벤트 발생하지 않음
+    }
+    setIsBookmarkHandlerRunning(true);
+    if (userId) {
+      dispatch(
+        bookmarkToggleAction({
+          courseId,
+          isBookmarked,
+          isDetailPage: false,
+        })
+      ).then(() => {
+        setIsBookmarkHandlerRunning(false);
+      });
+    } else {
+      dispatch(
+        openModal({
+          modalType: "LoginModal",
+          isOpen: true,
+        })
+      );
+      setIsBookmarkHandlerRunning(false);
+    }
   };
 
   const handleToggleLike = (
     e: React.MouseEvent<HTMLDivElement, MouseEvent>
   ) => {
     e.stopPropagation();
-    dispatch(listLikeToggleAction(courseId));
+    if (isLikeHandlerRunning) {
+      return; // 이벤트 핸들러가 실행 중인 경우 함수 실행하지 않음
+    }
+    setIsLikeHandlerRunning(true);
+
+    if (userId) {
+      dispatch(
+        likeToggleAction({ courseId, isLiked, isDetailPage: false })
+      ).then(() => {
+        setIsLikeHandlerRunning(false);
+      });
+    } else {
+      dispatch(
+        openModal({
+          modalType: "LoginModal",
+          isOpen: true,
+        })
+      );
+      setIsLikeHandlerRunning(false);
+    }
   };
 
   const handleLinkClick = () => {
-    router.push(`/course/${courseId}`);
+    dispatch(resetCourseDetail());
+    router.push(`/course/${courseId}`, undefined, { shallow: true });
+  };
+
+  const handleKakaoShare = () => {
+    if (userId) {
+      const param = {
+        title,
+        content,
+        thumbnailUrl,
+        likeCount,
+        courseId,
+      };
+      kakaoShare(param);
+    } else {
+      dispatch(
+        openModal({
+          modalType: "LoginModal",
+          isOpen: true,
+        })
+      );
+    }
   };
 
   return (
@@ -89,37 +160,33 @@ const CourseItem = ({
           />
         </div>
         <div className={styles["item-info-text"]}>
-          <h3>{title}</h3>
-          <p>{content}</p>
-          {courseDays && <TagItem text={courseDays} />}
+          <h3 className={styles.title}>{title}</h3>
+          <p className={styles.content}>{content}</p>
+          {courseDays && <TagItem size="S" text={courseDays} />}
         </div>
       </div>
       <div className={styles["item-nav-container"]}>
-        <div
-          className={styles["item-nav"]}
-          onClick={() => bookmarkHandler(courseId)}
-        >
-          {/* TODO: CSS 손보기 컴포넌트 통일 */}
+        <div className={styles["item-nav"]} onClick={handleToggleBookmark}>
           {isBookmarked ? (
-            <BsBookmarkFill className={styles.bookmark} />
+            <BsBookmarkFill className={`${styles.bookmark} ${styles.icon}`} />
           ) : (
-            <BsBookmark className={styles.unbookmark} />
+            <BsBookmark className={`${styles.unbookmark} ${styles.icon}`} />
           )}
         </div>
-        <div className={`${styles["item-nav"]} ${styles.center}`}>
-          <BsShare />
+        <div
+          className={`${styles["item-nav"]} ${styles.center}`}
+          onClick={handleKakaoShare}
+        >
+          <BsShare className={styles.icon} />
         </div>
         <div
           className={`${styles["item-nav"]} ${styles.roughmapBtn}`}
           onClick={toggleRoughMapHandler}
         >
           {isRoughMapOpen ? (
-            <BsMapFill
-              className={styles["map-icon"]}
-              color="var(--color-blue)"
-            />
+            <BsMapFill className={styles.icon} color="var(--color-blue)" />
           ) : (
-            <BsMap className={styles["map-icon"]} />
+            <BsMap className={styles.icon} />
           )}
           {isRoughMapOpen && (
             <RoughMap RoughMapData={places} onClose={onClose} />
@@ -130,4 +197,4 @@ const CourseItem = ({
   );
 };
 
-export default CourseItem;
+export default React.memo(CourseItem);

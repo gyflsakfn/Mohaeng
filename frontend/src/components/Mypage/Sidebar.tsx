@@ -14,15 +14,13 @@ const SidebarLink = ({ currIdx, label }: myPageState) => {
     label: label,
   };
   return (
-    <li className={styles["sidebar__list"]}>
-      {/* <Link href={href} style={{ textDecoration: "none" }} passHref> */}
+    <li className={styles["sidebar-list"]}>
       <button
-        className={styles["sidebar__button"]}
+        className={styles["sidebar-button"]}
         onClick={() => dispatch(setCurrIdx(currComponent))}
       >
         {label}
       </button>
-      {/* </Link> */}
     </li>
   );
 };
@@ -35,16 +33,18 @@ const Sidebar = () => {
     { currIdx: 0, label: "회원정보" },
     { currIdx: 1, label: "즐겨찾기" },
     { currIdx: 2, label: "나의 여행 일정" },
-    { currIdx: 3, label: "내가 쓴 글" },
+    { currIdx: 3, label: "나의 리뷰" },
   ];
 
   return (
     <nav className={styles.sidebar}>
-      <ul>
-        <div className={styles["ProfileWrapper"]}>
-          <img src={imageUrl} className={styles["Avatar"]} />
+      <ul className={styles.sidebarLists}>
+        <div className={styles.profileWrapper}>
+          <div className={styles.avatarBox}>
+            <img src={imageUrl} className={styles.avatar} />
+          </div>
           <div>
-            <div className={styles["Nickname"]}>{nickName}</div>
+            <div className={styles.nickName}>{nickName}</div>
           </div>
         </div>
         {links.map((link) => (

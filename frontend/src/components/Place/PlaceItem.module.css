@@ -1,17 +1,12 @@
 .place-item-container {
-  /* position: relative; */
   width: 100%;
-  height: 270px;
-  border: 2px solid var(--color-border-semi);
-  background-color: white;
-  display: flex;
-  flex-direction: column;
-  box-sizing: border-box;
+  height: 260px;
   border-radius: 1rem;
-}
-.item-info-container {
-  /* flex: 8; */
-  background: transparent;
+  background: rgb(255, 255, 255);
+  box-shadow: 0px 4px 13px 2px rgba(25, 25, 25, 0.25);
+  -webkit-box-shadow: 0px 4px 13px 2px rgba(25, 25, 25, 0.25);
+  -moz-box-shadow: 0px 4px 13px 2px rgba(25, 25, 25, 0.25);
+  color: var(--color-text-basic);
 }
 
 .item-nav-container {
@@ -23,17 +18,14 @@
   border-bottom-right-radius: 1rem;
   border-top: 2px solid var(--color-border-semi);
 }
+
 .item-image {
   position: relative;
-  height: 12rem;
+  height: 11rem;
   border-top-left-radius: 0.8rem;
   border-top-right-radius: 0.8rem;
   overflow: hidden;
-}
-.item-image-box {
-  position: absolute;
-  width: 100%;
-  height: 100%;
+  cursor: pointer;
 }
 
 .item-image img {
@@ -44,10 +36,17 @@
   object-position: center;
 }
 
+.item-image:hover img {
+  transition: all ease 0.3s;
+  transform: scale(1.1);
+}
+
 .keywordInfo {
   display: flex;
+  justify-content: space-between;
   flex-direction: row;
   padding: 0 1rem 0.5em 1rem;
+  cursor: pointer;
 }
 
 .keywordDesc {
@@ -72,9 +71,12 @@
 }
 
 .keywordBookmark {
+  display: flex;
+  justify-content: center;
+  align-items: center;
   width: 30px;
   margin-top: 10px;
-  margin-left: 120px;
+  cursor: pointer;
 }
 
 .bookmark,
@@ -84,8 +86,8 @@
 }
 
 .unbookmark {
-  color: var(--color-blue);
-  font-size: 26px;
+  color: var(--color-border-light);
+  font-size: 30px;
 }
 
 .unbookmark:hover {
@@ -96,5 +98,5 @@
 
 .bookmark {
   color: var(--color-blue);
-  font-size: 26px;
+  font-size: 30px;
 }

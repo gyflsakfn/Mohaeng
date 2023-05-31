@@ -1,12 +1,11 @@
 package com.mohaeng.backend.course.dto.request;
 
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.*;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.validator.constraints.Length;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -16,6 +15,7 @@ import java.util.List;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class CourseReq {
     @NotBlank
+    @Length(min = 4, max = 25)
     private String title;
     @NotNull
     private String startDate;
@@ -28,6 +28,8 @@ public class CourseReq {
     private String region;
 
     private String thumbnailUrl;
+    @NotBlank
+    @Length(min = 10, max = 300)
     private String content;
     @NotEmpty
     private List<Long> placeIds = new ArrayList<>();

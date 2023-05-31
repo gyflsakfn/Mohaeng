@@ -1,0 +1,16 @@
+.info {
+  display: flex;
+  height: 600px;
+  position: relative;
+  gap: 0.6rem;
+  padding-top: 1rem;
+}
+
+/* MEDIA QUERIES (tablets) */
+@media screen and (max-width: 1024px) {
+  .info {
+    flex-direction: column;
+    height: 800px;
+    gap: 0.4rem;
+  }
+}

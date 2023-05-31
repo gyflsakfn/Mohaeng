@@ -9,6 +9,5 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface PlaceBookmarkRepository extends JpaRepository<PlaceBookmark, Long> {
     boolean existsPlaceBookmarkByMemberAndPlace(Member member, Place place);
-    boolean existsPlaceBookmarkByMemberAndId(Member member, Long id);
     PlaceBookmark findByMemberAndPlace(Member member, Place place);
 }

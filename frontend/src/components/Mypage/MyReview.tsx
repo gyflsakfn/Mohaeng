@@ -1,11 +1,20 @@
 import styles from "./MyReview.module.css";
-import { useState, useRef } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import { RootState } from "@/src/store/store";
 import MyReviewItem from "./MyReviewItem";
+import { useEffect } from "react";
+import { useAppDispatch } from "@/src/hooks/useReduxHooks";
+import cookie from "react-cookies";
+import { getMyReview } from "@/src/store/reducers/myReviewSlice";
 
 const MyReview = () => {
+  const appDispatch = useAppDispatch();
+  const accessToken = cookie.load("accessToken");
   const myReview = useSelector((state: RootState) => state.myReview.data);
+
+  useEffect(() => {
+    appDispatch(getMyReview(accessToken));
+  }, []);
 
   return (
     <>
@@ -16,8 +25,7 @@ const MyReview = () => {
             reviewId={review.reviewId}
             placeId={review.placeId}
             imgUrl={review.imgUrl}
-            title={review.title}
-            likeCount={review.likeCount}
+            name={review.name}
             createdDate={review.createdDate}
             content={review.content}
             rating={review.rating}

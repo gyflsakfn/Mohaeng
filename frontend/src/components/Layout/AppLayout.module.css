@@ -1,30 +1,27 @@
-/* AppLayout.module.css */
-@import "./Footer.module.css";
-@import "./Header.module.css";
-
-/* AppLayout styles */
-/* :root {
-  --content-horizontal-margin: 8rem;
-} */
-
-.Container {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  height: 100%;
-  min-height: 100%;
-  position: relative;
+.content-container {
+  min-height: 100vh;
+  max-width: 1256px;
+  padding: 1rem var(--explore_padding-inline) 4rem;
+  margin: 0 auto;
 }
 
-.contentWrapper {
-  margin: 2rem 2rem 8rem;
-  padding-bottom: 60px;
-  height: auto;
-  min-height: 100%;
+/* MEDIA QUERIES (tablets) */
+@media screen and (max-width: 1024px) {
+  .content-container {
+    padding: 1.8rem var(--explore_padding-inline) 6rem;
+  }
 }
 
-.footer {
-  width: 100%;
-  position: absolute;
-  bottom: 0;
+/* MEDIA QUERIES (middle) */
+@media screen and (max-width: 800px) {
+  .content-container {
+    padding: 1.5rem var(--explore_padding-inline) 3.5rem;
+  }
+}
+
+/* MEDIA QUERIES (phones) */
+@media screen and (max-width: 600px) {
+  .content-container {
+    padding: 1.1rem var(--explore_padding-inline) 2rem;
+  }
 }

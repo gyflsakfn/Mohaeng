@@ -1,17 +1,12 @@
-import { ICourseEditParam } from "./../../interfaces/Course.type";
-import { createCourseApi, editCourseApi } from "@/src/services/courseService";
-import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
-import {
-  ICourseForm,
-  ICourseOriginForm,
-  ICourseSubmitForm,
-} from "../../interfaces/Course.type";
-import PlaceId from "@/src/pages/place/[id]";
+import { IFormErrors, IPlace } from "../../interfaces/Course.type";
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { ICourseForm, ICourseOriginForm } from "../../interfaces/Course.type";
+import { createCourseAction } from "../thunks/courseThunks";
 
 interface CourseState {
-  error?: string;
+  errors?: IFormErrors;
+  isFormValid: boolean;
   course: ICourseOriginForm;
-  // places: IPlacesForm
 }
 
 export const initialState: CourseState = {
@@ -29,46 +24,8 @@ export const initialState: CourseState = {
     isLiked: false,
     likeCount: 0,
   },
+  isFormValid: false,
 };
-
-export const createCourseAction = createAsyncThunk(
-  "course/createUserAction",
-  async (formData: ICourseOriginForm) => {
-    const { places, ...rest } = formData;
-    const validPlace = places.find((place) => place.imgUrl.trim() !== "");
-    const thumbnailUrl = validPlace?.imgUrl ?? "";
-    const extractedPlaceIds = places.map((place) => place.placeId);
-
-    const validData = {
-      ...rest,
-      placeIds: extractedPlaceIds,
-      thumbnailUrl: thumbnailUrl,
-    };
-
-    const response = await createCourseApi(validData);
-    const resData = await response.data.data;
-    return { formData, resData };
-  }
-);
-
-export const editCourseAction = createAsyncThunk(
-  "course/editCourseAction",
-  async (formData: ICourseEditParam) => {
-    const { courseId, course } = formData;
-    const { places, ...rest } = course;
-    const validPlace = places.find((place) => place.imgUrl.trim() !== "");
-    const thumbnailUrl = validPlace?.imgUrl ?? "";
-    const extractedPlaceIds = places.map((place) => place.placeId);
-
-    const validData = {
-      ...rest,
-      placeIds: extractedPlaceIds,
-      thumbnailUrl: thumbnailUrl,
-    };
-    const response = await editCourseApi(courseId, validData);
-    return formData;
-  }
-);
 
 export const CourseFormSlice = createSlice({
   name: "courseform",
@@ -81,7 +38,6 @@ export const CourseFormSlice = createSlice({
         value: string | boolean;
       }>
     ) => {
-      ``;
       const { name, value } = action.payload;
       state.course = {
         ...state.course,
@@ -92,8 +48,10 @@ export const CourseFormSlice = createSlice({
       const newList = state.course.places.filter(
         (place) => place.placeId !== action.payload
       );
-      console.log(newList);
       state.course.places = newList;
+    },
+    updatePlaces: (state, action: PayloadAction<IPlace[]>) => {
+      state.course.places = action.payload;
     },
     resetFormValue: () => {
       return initialState;
@@ -105,6 +63,7 @@ export const CourseFormSlice = createSlice({
         state.course.places.map((place) => place.placeId)
       );
       if (placeIds.has(data.placeId)) {
+        window.alert("이미 추가된 장소입니다.");
         // 이미 같은 placeId를 가진 객체가 존재하므로 추가하지 않음
         return;
       }
@@ -113,6 +72,12 @@ export const CourseFormSlice = createSlice({
     },
     addFormValue: (state, action) => {
       state.course = action.payload;
+    },
+    setIsFormValidTrue(state) {
+      state.isFormValid = true;
+    },
+    setIsFormValidFalse(state) {
+      state.isFormValid = false;
     },
   },
   extraReducers: (builder) => {
@@ -131,8 +96,11 @@ export const CourseFormSlice = createSlice({
 export const {
   setFormValue,
   resetFormValue,
+  updatePlaces,
   addPlaceObject,
   removePlace,
   addFormValue,
+  setIsFormValidTrue,
+  setIsFormValidFalse,
 } = CourseFormSlice.actions;
 export default CourseFormSlice.reducer;

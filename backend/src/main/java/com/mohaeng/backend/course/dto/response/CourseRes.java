@@ -16,6 +16,7 @@ public class CourseRes {
     private Long courseId;
     private String title;
     private String nickname;
+    private String profileImgUrl;
     private Integer likeCount;
     private String courseDays;
     private String region;
@@ -29,11 +30,12 @@ public class CourseRes {
     private Boolean isBookmarked;
 
     @Builder
-    public CourseRes(Long courseId, String title, String nickname, Integer likeCount, String courseDays, String region, Boolean isPublished, LocalDateTime createdDate, String startDate, String endDate,
+    public CourseRes(Long courseId, String title, String nickname, String profileImgUrl, Integer likeCount, String courseDays, String region, Boolean isPublished, LocalDateTime createdDate, String startDate, String endDate,
                      String content, List<CourseInPlaceDto> places, Boolean isLiked, Boolean isBookmarked) {
         this.courseId = courseId;
         this.title = title;
         this.nickname = nickname;
+        this.profileImgUrl = profileImgUrl;
         this.likeCount = likeCount;
         this.courseDays = courseDays;
         this.region = region;
@@ -53,6 +55,7 @@ public class CourseRes {
                 .courseId(course.getId())
                 .title(course.getTitle())
                 .nickname(course.getMember().getNickName())
+                .profileImgUrl(course.getMember().getImageURL() + "/" +course.getMember().getImageName())
                 .likeCount(course.getLikeCount())
                 .courseDays(course.getCourseDays())
                 .region(course.getRegion())

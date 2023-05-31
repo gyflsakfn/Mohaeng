@@ -1,0 +1,46 @@
+.nav {
+  display: flex;
+  gap: 3.6rem;
+}
+
+.link {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 4rem;
+  color: var(--color-text-basic);
+  font-weight: bold;
+  font-size: 1.1rem;
+  text-align: center;
+}
+.link.active {
+  color: var(--color-primary);
+  font-weight: bold;
+}
+.link a {
+  width: 50px;
+}
+
+/* MEDIA QUERIES (tablets) */
+@media screen and (max-width: 1024px) {
+  .nav {
+    flex-direction: column;
+    gap: 0.6rem;
+  }
+  .link {
+    border-radius: 0.2rem;
+    padding: 1.2rem 0;
+  }
+  .link.active {
+    color: var(--color-text-basic);
+    background-color: var(--color-primary);
+    font-weight: bold;
+  }
+}
+
+/* MEDIA QUERIES (phones) */
+@media screen and (max-width: 600px) {
+  .nav {
+    gap: 0.6rem;
+  }
+}

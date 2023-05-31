@@ -12,6 +12,7 @@ import org.hibernate.id.enhanced.SequenceStyleGenerator;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import static jakarta.persistence.FetchType.LAZY;
 
@@ -128,5 +129,23 @@ public class Place {
 
     public void addReview(Review review) {
         this.getReviewList().add(review);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Place place = (Place) o;
+        return Objects.equals(name, place.name) &&
+                Objects.equals(address, place.address);
+    }
+
+    public void update(Place place) {
+        this.name = place.name;
+        this.address = place.address;
+    }
+
+    public void updateRating(double rating) {
+        this.rating = rating;
     }
 }

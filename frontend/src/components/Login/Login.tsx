@@ -12,18 +12,18 @@ export default function Login() {
         <p className={styles.loginInfo}>
           간편하게 로그인하고 모두의 여행을 경험해보세요
         </p>
-        <div className={styles.btnList}>
-          <Link className={styles.link} href={KAKAO_AUTH_URL}>
-            <button className={styles.kakaoBtn}>
-              <Image
-                src={btnKakao}
-                alt="카카오 로그인"
-                width={352}
-                height={54}
-              />
-            </button>
-          </Link>
-        </div>
+        <Link className={styles.link} href={KAKAO_AUTH_URL}>
+          <button className={styles.kakaoBtn}>
+            <Image
+              className={styles.kakaoLogin}
+              src={btnKakao}
+              alt="카카오 로그인"
+              width={352}
+              height={54}
+            />
+          </button>
+        </Link>
+
         <p className={styles.footerDesc}>
           로그인 또는 회원가입 시, 모두의 여행 이용약관 및 개인정보 정책에
           동의한 것으로 간주합니다.

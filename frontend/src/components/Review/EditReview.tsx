@@ -1,14 +1,17 @@
 import styles from "./CreateReview.module.css";
-import { IoMdClose } from "react-icons/io";
-import { useEffect, useState } from "react";
+import { ChangeEvent, useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import Image from "next/image";
 import axios from "axios";
 import cookie from "react-cookies";
 import ReviewRating from "./ReviewRating";
-import { useAppDispatch } from "@/src/hooks/useReduxHooks";
-import { getMyReview } from "@/src/store/reducers/myReviewSlice";
 import usePreventRefresh from "@/src/hooks/usePreventRefresh";
+import { AiFillCloseCircle } from "react-icons/ai";
+import { useRouterQuery } from "@/src/hooks/useRouterQuery";
+import { PlaceInfo } from "../PlaceDetail/PlaceDetail";
+// import { useAppDispatch } from "@/src/hooks/useReduxHooks";
+// import { getMyReview } from "@/src/store/reducers/myReviewSlice";
+// import { getPlaceBookmark } from "@/src/store/reducers/PlaceBookmarkSlice";
 
 export interface formData {
   reviewId: number;
@@ -21,13 +24,15 @@ export interface formData {
 }
 
 export default function EditReview() {
+  // const appDispatch = useAppDispatch();
+  const accessToken = cookie.load("accessToken");
   const router = useRouter();
-  const appDispatch = useAppDispatch();
-  const { placeId, reviewId, name } = router.query;
+  const { reviewId } = router.query;
+  const id = useRouterQuery("id");
 
   const [clicked, setClicked] = useState<boolean[]>(Array(5).fill(false));
   const [content, setContent] = useState<string>("");
-  const [star, setStar] = useState<number>();
+  const [errorMsg, setErrorMsg] = useState("");
   const [images, setImages] = useState<File[]>([]);
   const [previews, setPreviews] = useState<string[]>([]);
   const [reviewForm, setReviewForm] = useState<formData>({
@@ -39,9 +44,47 @@ export default function EditReview() {
     createdDate: "",
     imageUrls: [],
   });
-
-  const accessToken = cookie.load("accessToken");
   let rating = clicked.filter(Boolean).length;
+
+  const [placeInfo, setPlaceInfo] = useState<PlaceInfo>({
+    placeId: 0,
+    name: "",
+    areaCode: "",
+    firstImage: "",
+    contentId: "",
+    address: "",
+    mapX: "",
+    mapY: "",
+    overview: "",
+    rating: "",
+    review: "",
+  });
+
+  // * 상세 데이터중 placeId, name 가져오기
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const headers: { [key: string]: string } = {};
+        if (accessToken) {
+          headers["Access-Token"] = accessToken;
+          headers.withCredentials = "true";
+        }
+        const res = await axios.get(`/api/place/overview/${id}`, {
+          headers,
+        });
+        if (Object.keys(res.data.data.content[0]).length > 0) {
+          const { content } = res.data.data;
+          setPlaceInfo({ ...placeInfo, ...content[0] });
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    if (id) {
+      fetchData();
+    }
+  }, [id]);
 
   // * 새로고침 방지
   usePreventRefresh();
@@ -60,7 +103,7 @@ export default function EditReview() {
             "Access-Token": accessToken,
           },
         });
-        console.log(res.data.data);
+        // console.log(res.data.data);
         setReviewForm({
           ...res.data.data,
         });
@@ -88,7 +131,7 @@ export default function EditReview() {
     for (let i = 0; i < e.target.files!.length; i++) {
       const file = e.target.files![i];
 
-      if (newImages.length < 3) {
+      if (previews.length + reviewForm.imageUrls.length < 3) {
         newImages.push(file);
         const reader = new FileReader();
         reader.onload = (e) => {
@@ -123,11 +166,14 @@ export default function EditReview() {
 
   // * 리뷰 백엔드로 전송
   const submitReview = async () => {
-    if (rating == 0) {
+    if (rating === 0) {
       alert("별점을 입력해주세요");
       return false;
-    } else if (content == "") {
-      alert("리뷰 내용을 수정해주세요");
+    } else if (content === "") {
+      setErrorMsg("리뷰 내용을 입력해주세요");
+      return;
+    } else if (content.length < 20) {
+      setErrorMsg("리뷰 내용을 20자 이상 입력해주세요");
       return false;
     }
     const formData = new FormData();
@@ -172,13 +218,13 @@ export default function EditReview() {
           },
         })
         .then((response) => {
-          console.log(response.data, "리뷰 수정 성공!");
-          appDispatch(getMyReview(accessToken));
-          router.push(`/search?keyword=${name}`);
+          // appDispatch(getMyReview(accessToken));
+          // appDispatch(getPlaceBookmark(accessToken));
+          router.push(`/place/${id}`);
         });
     } catch (error) {
-      router.push(`/search?keyword=${name}`);
-      console.log(error, "리뷰 수정 실패ㅠ");
+      router.push(`/place/${id}`);
+      console.log(error);
     }
   };
 
@@ -192,13 +238,25 @@ export default function EditReview() {
     }
   };
 
+  // * 리뷰 에러메시지
+  const handleChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
+    const { value } = e.target;
+    if (value.length <= 250) {
+      setContent(value);
+    }
+  };
+
+  useEffect(() => {
+    setContent(reviewForm.content);
+  }, [reviewForm]);
+
   return (
     <>
       <section className={styles.registerReviewContainer}>
         <h2 className={styles.h2}>리뷰 수정</h2>
         <article className={styles.registerReview}>
           <p className={styles.boldTitle}>선택한 여행지</p>
-          <h3 className={styles.reviewTitle}>{name}</h3>
+          <h3 className={styles.reviewTitle}>{placeInfo.name}</h3>
 
           <div className={styles.ratingBox}>
             <strong className={styles.ratingTitle}>별점</strong>
@@ -208,26 +266,31 @@ export default function EditReview() {
 
           <div id="review" className={styles.form}>
             <label htmlFor="review" className={styles.boldTitle}>
-              리뷰내용
+              리뷰 내용
             </label>
             <textarea
-              defaultValue={reviewForm.content}
+              value={content}
               className={styles.formTxtArea}
               name="review"
               id="review"
               placeholder="방문한 곳은 어떠셨나요? 당신의 경험을 공유해보세요!"
               required={true}
-              onChange={(e) => setContent(e.target.value)}
+              onChange={handleChange}
             ></textarea>
+            <div className={styles.contentCheck}>
+              {errorMsg && <p className={styles.errorMsg}>{errorMsg}</p>}
+              <p className={styles.contentLength}>{content.length}/250</p>
+            </div>
 
-            <p className={styles.boldTitle}>사진 추가하기</p>
-            <label htmlFor="inputFile">
-              <div className={styles.chooseFile}>사진 선택</div>
+            <p className={styles.boldTitle}>사진 추가하기 (선택)</p>
+            <label className={styles.chooseLabel} htmlFor="inputFile">
+              <div className={styles.chooseFile}>사진 첨부</div>
             </label>
             <input
               type="file"
               id="inputFile"
               multiple
+              accept="image/*"
               className={styles.imageForm}
               onChange={handleImageChange}
             />
@@ -239,13 +302,14 @@ export default function EditReview() {
               {previews?.map((preview, index) => (
                 <div className={styles.imgBox} key={index}>
                   <Image
+                    className={styles.previewImg}
                     src={preview}
                     width={200}
                     height={200}
                     alt={`${preview}-${index}`}
                   />
-                  <IoMdClose
-                    className={styles.deleteImg}
+                  <AiFillCloseCircle
+                    className={styles.deleteImgBtn}
                     onClick={() => handleDeletePreview(index)}
                   />
                 </div>
@@ -253,13 +317,14 @@ export default function EditReview() {
               {reviewForm.imageUrls?.map((preview, index) => (
                 <div className={styles.imgBox} key={index}>
                   <Image
+                    className={styles.previewImg}
                     src={preview}
                     width={200}
                     height={200}
                     alt={`${preview}-${index}`}
                   />
-                  <IoMdClose
-                    className={styles.deleteImg}
+                  <AiFillCloseCircle
+                    className={styles.deleteImgBtn}
                     onClick={() => handleDeleteImage(index)}
                   />
                 </div>

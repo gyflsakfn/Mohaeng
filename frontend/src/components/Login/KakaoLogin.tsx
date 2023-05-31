@@ -33,7 +33,6 @@ const KakaoLogin = () => {
         cookie.save("refreshToken", refreshToken, {
           path: "/",
         });
-        setToken;
         dispatch(setToken(accessToken));
 
         if (accessToken) {

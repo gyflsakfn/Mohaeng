@@ -12,7 +12,7 @@ export default function ReviewTextarea({
   return (
     <>
       <label htmlFor="review" className={styles.boldTitle}>
-        리뷰내용
+        리뷰 내용
       </label>
       <textarea
         value={value}

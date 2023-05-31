@@ -1,7 +1,7 @@
 "use client";
 import React, { useEffect, useState } from "react";
 
-import { Navigation } from "swiper";
+import { Navigation, Pagination } from "swiper";
 import { Swiper, SwiperSlide } from "swiper/react";
 import cookie from "react-cookies";
 import PlaceCard from "@/src/components/Main/PlaceCard";
@@ -36,13 +36,41 @@ const PlaceCardSlider = () => {
     fetchData();
   }, []);
 
+  const breakpoints = {
+    // when window width is <= 640px
+    640: {
+      slidesPerView: 1,
+      slidesPerGroup: 1,
+      pagination: {
+        el: ".swiper-pagination",
+        clickable: true,
+      },
+    },
+
+    // when window width is <= 768px
+    768: {
+      slidesPerView: 2,
+      slidesPerGroup: 1,
+    },
+    // when window width is <= 1024px
+    1024: {
+      slidesPerView: 3,
+      slidesPerGroup: 2,
+    },
+    // when window width is <= 1200px
+    1200: {
+      slidesPerView: 4,
+      slidesPerGroup: 3,
+    },
+  };
+
   return (
     <Swiper
-      modules={[Navigation]}
+      modules={[Navigation, Pagination]}
+      pagination={{ clickable: true }}
       spaceBetween={0}
-      slidesPerView={4}
-      slidesPerGroup={3}
       navigation
+      breakpoints={breakpoints}
       // onSwiper={(swiper) => console.log(swiper)}
       // onSlideChange={() => console.log("slide change")}
     >
@@ -53,7 +81,7 @@ const PlaceCardSlider = () => {
               key={place.placeId}
               placeId={place.placeId}
               name={place.name}
-              content={place.content}
+              region={place.region}
               firstImage={place.firstImage}
               averageRating={place.averageRating}
             />

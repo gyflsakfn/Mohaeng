@@ -17,6 +17,7 @@ public class PlaceDetailsDto {
     private String contentId;
     private String mapX;
     private String mapY;
+    private String address;
     private String overview;
 
     public static PlaceDetailsDto from(Place place, PlaceService placeService){
@@ -32,6 +33,7 @@ public class PlaceDetailsDto {
                 .contentId(place.getContentId())
                 .mapX(place.getMapX())
                 .mapY(place.getMapY())
+                .address(place.getAddress())
                 .overview(place.getOverview())
                 .build();
     }

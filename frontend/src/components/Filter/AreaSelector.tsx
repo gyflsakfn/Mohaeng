@@ -1,6 +1,5 @@
-import { useAppDispatch } from "@/src/hooks/useReduxHooks";
+import { useAppDispatch, useAppSelector } from "@/src/hooks/useReduxHooks";
 import { selectArea } from "@/src/store/reducers/FilterSlice";
-import { useState } from "react";
 import styles from "./AreaSelector.module.css";
 
 const areas = [
@@ -30,30 +29,55 @@ interface IArea {
 }
 
 const AreaSelector = () => {
-  const [selectedArea, setSelectedArea] = useState("all");
-
+  const { area } = useAppSelector((state) => state.filter);
   const dispatch = useAppDispatch();
 
   const areaClickHandler = (area: IArea) => {
-    setSelectedArea(area.areaCode);
     dispatch(selectArea(area));
+  };
+
+  const regionChangedHandler = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const selectedRegion = e.target.value;
+    const selectedArea = areas.find((item) => item.region === selectedRegion);
+    if (selectedArea) {
+      dispatch(selectArea(selectedArea));
+    }
   };
 
   return (
     <div className={styles.container}>
       <h3>지역</h3>
-      <div className={styles["selector-wrapper"]}>
-        {areas.map((area) => (
+      <div
+        className={`${styles["selector-wrapper"]} ${styles["desktop-only"]}`}
+      >
+        {areas.map((item) => (
           <button
-            key={area.areaCode}
-            onClick={() => areaClickHandler(area)}
+            key={item.areaCode}
+            onClick={() => areaClickHandler(item)}
             className={`${styles.button} ${
-              selectedArea === area.areaCode ? styles.active : ""
+              area.areaCode === item.areaCode ? styles.active : ""
             }`}
           >
-            {area.region}
+            {item.region}
           </button>
         ))}
+      </div>
+      <div className={` ${styles.region} ${styles["mobile-only"]}`}>
+        <select
+          name="region"
+          value={area.region}
+          onChange={regionChangedHandler}
+          className={styles.select}
+        >
+          <option value="" disabled>
+            지역 선택
+          </option>
+          {areas.map((item) => (
+            <option key={item.areaCode} value={item.region}>
+              {item.region}
+            </option>
+          ))}
+        </select>
       </div>
     </div>
   );

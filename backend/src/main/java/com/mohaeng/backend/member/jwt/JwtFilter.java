@@ -39,7 +39,7 @@ public class JwtFilter extends GenericFilterBean {
 
         if (accessToken != null && tokenGenerator.checkToken(accessToken)) {
             String email = tokenGenerator.parseEmailFromToken(accessToken);
-            Member member = memberRepository.findByEmail(email).get();
+            Member member = memberRepository.findByEmailAndDeletedDateIsNull(email).get();
 
 //            request.setAttribute("userEmail", email);
 

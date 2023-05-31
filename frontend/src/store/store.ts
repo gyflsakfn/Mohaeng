@@ -5,21 +5,21 @@ import nickNameReducer from "./reducers/loginTokenSlice";
 import emailReducer from "./reducers/loginTokenSlice";
 import idReducer from "./reducers/loginTokenSlice";
 import imgUrlReducer from "./reducers/loginTokenSlice";
-import CourseFormSlice from "./reducers/CourseFormSlice";
-import FilterSlice from "./reducers/FilterSlice";
-import CourseListSlice from "./reducers/CourseListSlice";
 import placeReducer from "./reducers/PlaceSlice";
 import mypageReducer from "./reducers/mypageSlice";
 import pageReducer from "./reducers/pageSlice";
 import searchPlaceReducer from "./reducers/searchPlaceSlice";
 import searchCourseReducer from "./reducers/searchCourseSlice";
-import courseBookmarkReducer from "./reducers/CourseBoomarkSlice";
 import placeBookmarkReducer from "./reducers/PlaceBookmarkSlice";
 import reviewDetailReducer from "./reducers/reviewDetailSlice";
 import reviewReducer from "./reducers/reviewSlice";
 import myCourseReducer from "./reducers/myCourseSlice";
-import CourseDetailSlice from "./reducers/CourseDetailSlice";
 import myReviewReducer from "./reducers/myReviewSlice";
+import FilterSlice from "./reducers/FilterSlice";
+import CourseBookmarkReducer from "./reducers/CourseBoomarkSlice";
+import CourseDetailSlice from "./reducers/CourseDetailSlice";
+import CourseListSlice from "./reducers/CourseListSlice";
+import CourseFormSlice from "./reducers/CourseFormSlice";
 
 const store = configureStore({
   reducer: {
@@ -37,7 +37,7 @@ const store = configureStore({
     page: pageReducer,
     searchPlace: searchPlaceReducer,
     searchCourse: searchCourseReducer,
-    courseBookmark: courseBookmarkReducer,
+    courseBookmark: CourseBookmarkReducer,
     placeBookmark: placeBookmarkReducer,
     reviewDetail: reviewDetailReducer,
     review: reviewReducer,

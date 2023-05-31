@@ -2,13 +2,19 @@ package com.mohaeng.backend.place.controller;
 
 import com.mohaeng.backend.Image.AmazonS3Service;
 import com.mohaeng.backend.common.BaseResponse;
+import com.mohaeng.backend.exception.notfound.PlaceNotFoundException;
+import com.mohaeng.backend.exception.notfound.ReviewNotFoundException;
 import com.mohaeng.backend.member.jwt.TokenGenerator;
+import com.mohaeng.backend.place.domain.Place;
 import com.mohaeng.backend.place.domain.Review;
 import com.mohaeng.backend.place.dto.request.CreateReviewRequest;
 import com.mohaeng.backend.place.dto.request.UpdateReviewRequest;
 import com.mohaeng.backend.place.dto.response.FindAllReviewResponse;
 import com.mohaeng.backend.place.dto.response.FindReviewResponse;
 import com.mohaeng.backend.place.dto.response.FindSearchReviewsResponse;
+import com.mohaeng.backend.place.repository.PlaceRepository;
+import com.mohaeng.backend.place.repository.ReviewRepository;
+import com.mohaeng.backend.place.service.PlaceService;
 import com.mohaeng.backend.place.service.ReviewService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
@@ -28,15 +34,22 @@ import java.util.List;
 public class ReviewController {
 
     private final ReviewService reviewService;
+    private final PlaceService placeService;
     private final TokenGenerator tokenGenerator;
     private final AmazonS3Service amazonS3Service;
+    private final PlaceRepository placeRepository;
+    private final ReviewRepository reviewRepository;
 
     @GetMapping("/review/{placeId}")
     public ResponseEntity getPlaceReview(@PathVariable Long placeId,
                                          @RequestParam(defaultValue = "1") int page) {
         Page<Review> reviews = reviewService.getAllReviewByPage(placeId, page);
-        List<FindAllReviewResponse> data = reviews.map(FindAllReviewResponse::of).getContent();
-        double averageRating = Math.round(reviewService.getAverageRating(reviewService.getAllReviewById(placeId)) * 100 ) / 100.0;
+        Review review2 = reviewRepository.findById(placeId)
+                .orElseThrow(ReviewNotFoundException::new);
+        Place findPlace = placeRepository.findById(review2.getPlace().getId())
+                .orElseThrow(PlaceNotFoundException::new);
+        List<FindAllReviewResponse> data = reviews.map(review -> FindAllReviewResponse.of(review, findPlace)).getContent();
+        double averageRating = Math.round(reviewRepository.getAverageRatingByPlaceId(placeId) * 100 ) / 100.0;
         FindSearchReviewsResponse response = new FindSearchReviewsResponse(data, reviews.getTotalPages(), reviews.getTotalElements(), averageRating);
         return ResponseEntity.ok(BaseResponse.success("ok", response));
     }
@@ -44,7 +57,8 @@ public class ReviewController {
     @GetMapping("/review/detail/{reviewId}")
     public ResponseEntity getReview(@PathVariable Long reviewId) {
         Review review = reviewService.getReviewById(reviewId);
-        FindReviewResponse response = FindReviewResponse.of(review);
+        Place place = placeService.getPlaceById(review.getPlace().getId());
+        FindReviewResponse response = FindReviewResponse.of(review,place);
         return ResponseEntity.ok(BaseResponse.success("ok", response));
     }
 
@@ -58,7 +72,8 @@ public class ReviewController {
             fileNameList = amazonS3Service.uploadFile(multipartFileList);
         }
         reviewService.createReview(email, placeId, createReviewRequest, fileNameList);
-        return ResponseEntity.ok(BaseResponse.success("ok", ""));
+        List<FindAllReviewResponse> response = reviewService.getAllReview(placeId);
+        return ResponseEntity.ok(BaseResponse.success("ok", response));
     }
 
     @PutMapping("/review/detail/{reviewId}")
@@ -70,13 +85,21 @@ public class ReviewController {
             fileNameList = amazonS3Service.uploadFile(multipartFileList);
         }
         reviewService.updateReview(reviewId, updateReviewRequest, fileNameList);
-        return ResponseEntity.ok(BaseResponse.success("ok", ""));
+        Review review = reviewService.getReviewById(reviewId);
+        Place findPlace = placeRepository.findById(review.getPlace().getId())
+                .orElseThrow(PlaceNotFoundException::new);
+        FindAllReviewResponse response = FindAllReviewResponse.of(review, findPlace);
+        return ResponseEntity.ok(BaseResponse.success("ok", response));
     }
 
     @DeleteMapping("/review/detail/{reviewId}")
     public ResponseEntity deleteReview(@PathVariable Long reviewId) {
-        reviewService.deleteReview(reviewId);
-        return ResponseEntity.ok(BaseResponse.success("ok", ""));
+        Review review = reviewService.getReviewById(reviewId);
+        Place findPlace = placeRepository.findById(review.getPlace().getId())
+                .orElseThrow(PlaceNotFoundException::new);
+        FindAllReviewResponse response = FindAllReviewResponse.of(review, findPlace);
+        reviewService.deleteReview(reviewId, findPlace.getId());
+        return ResponseEntity.ok(BaseResponse.success("ok", response));
     }
 
     private String getEmail(HttpServletRequest httpServletRequest) {
@@ -87,8 +110,10 @@ public class ReviewController {
     public ResponseEntity getPlaceReviewsByRating(@PathVariable Long placeId,
                                                   @RequestParam(defaultValue = "1") int page) {
         Page<Review> reviews = reviewService.getAllReviewsByRating(placeId, page);
-        List<FindAllReviewResponse> data = reviews.map(FindAllReviewResponse::of).getContent();
-        double averageRating = Math.round(reviewService.getAverageRating(reviewService.getAllReviewById(placeId)) * 100) / 100.0;
+        Place findPlace = placeRepository.findById(placeId)
+                .orElseThrow(PlaceNotFoundException::new);
+        List<FindAllReviewResponse> data = reviews.map(review -> FindAllReviewResponse.of(review, findPlace)).getContent();
+        double averageRating = Math.round(reviewService.getAverageRating(findPlace) * 100) / 100.0;
         FindSearchReviewsResponse response = new FindSearchReviewsResponse(data, reviews.getTotalPages(), reviews.getTotalElements(), averageRating);
         return ResponseEntity.ok(BaseResponse.success("ok", response));
     }
@@ -97,8 +122,10 @@ public class ReviewController {
     public ResponseEntity getPlaceReviewsByDate(@PathVariable Long placeId,
                                                 @RequestParam(defaultValue = "1") int page) {
         Page<Review> reviews = reviewService.getAllReviewsByDate(placeId, page);
-        List<FindAllReviewResponse> data = reviews.map(FindAllReviewResponse::of).getContent();
-        double averageRating = Math.round(reviewService.getAverageRating(reviews.getContent()) * 100) / 100.0;
+        Place findPlace = placeRepository.findById(placeId)
+                .orElseThrow(PlaceNotFoundException::new);
+        List<FindAllReviewResponse> data = reviews.map(review -> FindAllReviewResponse.of(review, findPlace)).getContent();
+        double averageRating = Math.round(reviewService.getAverageRating(findPlace) * 100) / 100.0;
         FindSearchReviewsResponse response = new FindSearchReviewsResponse(data, reviews.getTotalPages(), reviews.getTotalElements(), averageRating);
         return ResponseEntity.ok(BaseResponse.success("ok", response));
     }

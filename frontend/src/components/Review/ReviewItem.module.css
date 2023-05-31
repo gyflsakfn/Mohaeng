@@ -1,9 +1,9 @@
 .reviewBox {
-  margin-bottom: 1rem;
+  margin: 1rem 0;
   border-radius: 12px;
-  padding: 30px 24px;
+  padding: 2rem;
   border: 1px solid var(--color-border-light);
-  background-color: var(--color-bg-white);
+  background-color: var(--color-white);
 }
 
 .reviewer {
@@ -42,10 +42,15 @@
 .reviewImgBox {
   display: flex;
   flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: space-between;
 }
+
 .reviewImg {
+  flex: 1 0 auto;
   padding: 4px;
   margin-right: 0.5rem;
+  cursor: pointer;
 }
 
 .btnGroup {
@@ -58,7 +63,7 @@
   text-align: center;
   font-size: medium;
   background-color: transparent;
-  color: var(--color-text-semi);
+  color: var(--color-text-light);
   cursor: pointer;
 }
 
@@ -77,16 +82,45 @@
   color: var(--color-primary);
 }
 
-.likeBtn {
+@media (max-width: 768px) {
+  .reviewBox {
+    padding: 1rem;
+  }
+
+  .reviewer {
+    font-size: small;
+  }
+
+  .userImg {
+    margin-right: 1rem;
+    border-radius: 50%;
+  }
+
+  .reviewContent {
+    margin-left: 0;
+  }
+
+  .reviewImgBox {
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .btn {
+    font-size: small;
+  }
+}
+
+/* .likeBtn {
   width: 60px;
   height: 30px;
   border: 1px solid var(--color-border-light);
   border-radius: 50px;
-  background-color: var(--color-bg-white);
+  background-color: var(--color-white);
   cursor: pointer;
 }
 
 .likeBtn:hover {
   color: var(--color-red);
   border-color: var(--color-red);
-}
+} */

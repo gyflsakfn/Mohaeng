@@ -65,7 +65,6 @@ public class CourseRepositoryImpl implements CourseRepositoryCustom{
                 .where(
                         titleEq(courseSearchDto.getKeyword()),
                         regionEq(courseSearchDto.getRegion()),
-                        daysEq(courseSearchDto.getDays()),
                         course.courseStatus.eq(CourseStatus.PUBLIC)
                 )
                 .groupBy(course.id)
@@ -80,7 +79,6 @@ public class CourseRepositoryImpl implements CourseRepositoryCustom{
                 .where(
                         titleEq(courseSearchDto.getKeyword()),
                         regionEq(courseSearchDto.getRegion()),
-                        daysEq(courseSearchDto.getDays()),
                         course.courseStatus.eq(CourseStatus.PUBLIC)
                 );
 
@@ -93,9 +91,11 @@ public class CourseRepositoryImpl implements CourseRepositoryCustom{
                 .select(Projections.constructor(MainCourseListDto.class,
                         course.id,
                         course.title,
-                        course.content,
                         course.thumbnailUrl,
                         course.likeCount,
+                        course.content,
+                        course.region,
+                        course.courseDays,
                         courseBookmark.course.id.isNull().not(),
                         courseLikes.course.id.isNull().not()
                 ))
@@ -134,12 +134,12 @@ public class CourseRepositoryImpl implements CourseRepositoryCustom{
         return isNull(keyword) ? null : course.title.contains(keyword);
     }
 
-    private BooleanExpression regionEq(String region) {
-        return isEmpty(region) ? null : course.region.eq(region);
+    private BooleanExpression placeEq(String keyword) {
+        return isNull(keyword) ? null : coursePlace.place.name.contains(keyword);
     }
 
-    private BooleanExpression daysEq(String days) {
-        return isEmpty(days) ? null : course.courseDays.eq(days);
+    private BooleanExpression regionEq(String region) {
+        return isEmpty(region) ? null : course.region.eq(region);
     }
 
 }

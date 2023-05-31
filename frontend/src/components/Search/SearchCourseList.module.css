@@ -1,28 +1,47 @@
 .section {
   width: 100%;
-  margin: 1rem;
-  /* display: flex;
-  flex-direction: column; */
+  height: 100%;
+  margin-top: 1rem;
+  color: var(--color-text-basic);
 }
 
 .keywordList {
-  margin-left: 1rem;
-  padding: 1.6rem 1.6rem;
+  margin-top: 1.4rem;
 }
 
 .h3 {
   margin-left: 4rem;
-  margin-bottom: 1rem;
 }
 
 .div {
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
   align-items: center;
   margin-left: 2rem;
+  margin-top: 1rem;
 }
 
-.review {
-  font-size: 0.9rem;
-  text-align: left;
+.noResult {
+  text-align: center;
+}
+
+/* MEDIA QUERIES (tablets) */
+@media screen and (max-width: 1024px) {
+  .h3 {
+    margin-left: 3rem;
+  }
+}
+
+/* MEDIA QUERIES (middle) */
+@media screen and (max-width: 800px) {
+  .h3 {
+    margin-left: 2rem;
+  }
+}
+
+/* MEDIA QUERIES (phones) */
+@media screen and (max-width: 600px) {
+  .h3 {
+    margin-left: 0;
+  }
 }

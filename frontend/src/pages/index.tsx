@@ -14,15 +14,15 @@ export default function Home() {
         <div className={styles["home-body-container"]}>
           <div className={styles["home-content-container"]}>
             <RecommendedSection
-              title="🔥별점 Top 10 여행지"
+              title="별점 Top 10 여행지"
               bgColor="Mgrey"
               linkUrl="place"
             >
               <PlaceCardSlider />
             </RecommendedSection>
             <RecommendedSection
-              title="❤️추천 코스"
-              bgColor="Lgrey"
+              title="많은 사람들이 좋아하는 코스"
+              bgColor="Mgrey"
               linkUrl="course"
             >
               <CourseCardSlider />

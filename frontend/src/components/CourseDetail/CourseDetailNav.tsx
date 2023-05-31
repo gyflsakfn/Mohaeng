@@ -1,5 +1,5 @@
 import styles from "./CourseDetailNav.module.css";
-import { useCallback, useEffect, useState } from "react";
+import { useState } from "react";
 import RoughMap from "../Course/RoughMap";
 import {
   BsBookmark,
@@ -7,23 +7,38 @@ import {
   BsMapFill,
   BsMap,
   BsShare,
-  BsHeartFill,
-  BsHeart,
 } from "react-icons/bs";
 import { useAppDispatch, useAppSelector } from "@/src/hooks/useReduxHooks";
+import { openModal } from "@/src/store/reducers/modalSlice";
+import TagItem from "../UI/TagItem";
+import { kakaoShare } from "@/src/utils/kakao-share";
+import LIkeButton from "../UI/LIkeButton";
 import {
-  detailBookmarkToggleAction,
-  detailLikeToggleAction,
-} from "@/src/store/reducers/CourseDetailSlice";
+  bookmarkToggleAction,
+  likeToggleAction,
+} from "@/src/store/thunks/courseThunks";
 
 const CourseDetailNav = () => {
   const [isRoughMapOpen, setIsRoughMapOpen] = useState(false);
-  const [formattedDate, setFormattedDate] = useState("");
+  const [isBookmarkHandlerRunning, setIsBookmarkHandlerRunning] =
+    useState(false);
+  const [isLikeHandlerRunning, setIsLikeHandlerRunning] = useState(false);
 
   const dispatch = useAppDispatch();
+  const { id: userId } = useAppSelector((state) => state.token);
   const course = useAppSelector((state) => state.courseDetail.course);
-  const { likeCount, places, courseId, isBookmarked, isLiked, createdDate } =
-    course;
+  const {
+    title,
+    content,
+    likeCount,
+    places,
+    courseId,
+    isBookmarked,
+    isLiked,
+    startDate,
+    endDate,
+    region,
+  } = course;
 
   const toggleRoughMapHandler = (e: React.MouseEvent<HTMLDivElement>): void => {
     e.stopPropagation();
@@ -33,74 +48,110 @@ const CourseDetailNav = () => {
     setIsRoughMapOpen(false);
   };
 
-  const bookmarkHandler = (id: number) => {
-    dispatch(detailBookmarkToggleAction(id));
+  const handleToggleBookmark = () => {
+    if (isBookmarkHandlerRunning) {
+      return;
+    }
+    setIsBookmarkHandlerRunning(true);
+    if (userId) {
+      dispatch(
+        bookmarkToggleAction({ courseId, isBookmarked, isDetailPage: true })
+      ).then(() => setIsBookmarkHandlerRunning(false));
+    } else {
+      dispatch(
+        openModal({
+          modalType: "LoginModal",
+          isOpen: true,
+        })
+      );
+      setIsBookmarkHandlerRunning(false);
+    }
   };
 
   const handleDetailLike = () => {
-    dispatch(detailLikeToggleAction(courseId));
+    if (isLikeHandlerRunning) {
+      return; // 이벤트 핸들러가 실행 중인 경우 함수 실행하지 않음
+    }
+    setIsLikeHandlerRunning(true);
+    if (userId) {
+      dispatch(
+        likeToggleAction({ courseId, isLiked, isDetailPage: true })
+      ).then(() => setIsLikeHandlerRunning(false));
+    } else {
+      dispatch(
+        openModal({
+          modalType: "LoginModal",
+          isOpen: true,
+        })
+      );
+      setIsLikeHandlerRunning(false);
+    }
   };
 
-  const getFomattedDate = useCallback((date: Date) => {
-    const year = date.getFullYear();
-    const month = date.getMonth() + 1;
-    const day = date.getDate();
+  const handleKakaoShare = () => {
+    if (userId) {
+      const param = {
+        title,
+        content,
+        thumbnailUrl: places[0].imgUrl,
+        likeCount,
+        courseId,
+      };
+      kakaoShare(param);
+    } else {
+      dispatch(
+        openModal({
+          modalType: "LoginModal",
+          isOpen: true,
+        })
+      );
+    }
+  };
 
-    return `${year}-${month < 10 ? "0" + month : month}-${
-      day < 10 ? "0" + day : day
-    }`;
-  }, []);
-
-  useEffect(() => {
-    const FormattedDate = getFomattedDate(new Date(createdDate));
-    setFormattedDate(FormattedDate);
-  }, [createdDate]);
-
-  const RoughMapData = places?.map((place) => place.name).join(", ");
+  const RoughMapData = places?.map((place) => place.name).join(",");
 
   return (
     <div className={styles["title-nav"]}>
-      <div className={styles["title-nav-left"]}>
-        <span className={styles.like}>
-          {isLiked ? (
-            <BsHeartFill className={styles.heart} onClick={handleDetailLike} />
-          ) : (
-            <BsHeart className={styles.heart} onClick={handleDetailLike} />
-          )}
-          <div>{likeCount}</div>
-        </span>
+      <div className={styles["simple-info"]}>
+        <div className={styles.date}>
+          <TagItem size="S" text="기간" bgColor="Dsky" />
+          <p className={styles.text}>
+            {startDate} ~ {endDate}
+          </p>
+        </div>
+        <div className={styles.region}>
+          <TagItem size="S" text="지역" bgColor="LMarinBlue" />
+          <p className={styles.text}>{region}</p>
+        </div>
       </div>
-      <div className={styles["title-nav-right"]}>
-        <span className={styles.dateinfo}>{formattedDate}</span>
+      <div className={styles["detail-nav"]}>
+        <LIkeButton
+          isLiked={isLiked}
+          likeCount={likeCount}
+          onClick={handleDetailLike}
+        />
         <div
           className={`${styles["item-nav"]} ${styles.roughmapBtn}`}
           onClick={toggleRoughMapHandler}
         >
           {isRoughMapOpen ? (
-            <BsMapFill
-              className={styles["map-icon"]}
-              color="var(--color-blue)"
-            />
+            <BsMapFill className={styles.icon} color="var(--color-blue)" />
           ) : (
-            <BsMap className={styles["map-icon"]} />
+            <BsMap className={styles.icon} />
           )}
           {isRoughMapOpen && (
             <RoughMap RoughMapData={RoughMapData} onClose={onClose} />
           )}
         </div>
-        <div
-          className={styles["item-nav"]}
-          onClick={() => bookmarkHandler(courseId)}
-        >
-          {/* TODO: CSS 손보기 컴포넌트 통일 */}
+        <div className={styles["item-nav"]} onClick={handleToggleBookmark}>
           {isBookmarked ? (
-            <BsBookmarkFill className={styles.bookmark} />
+            <BsBookmarkFill className={`${styles.bookmark} ${styles.icon}`} />
           ) : (
-            <BsBookmark className={styles.unbookmark} />
+            <BsBookmark className={`${styles.unbookmark} ${styles.icon}`} />
           )}
         </div>
-        <div className={styles["item-nav"]}>
-          <BsShare />
+        <div className={styles["item-nav"]} onClick={handleKakaoShare}>
+          <BsShare className={styles.icon} />
         </div>
       </div>
     </div>

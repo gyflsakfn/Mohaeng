@@ -1,9 +1,9 @@
 .place-search-container {
-  flex: 3;
+  width: calc(35% - 0.4rem);
   display: flex;
   flex-direction: column;
   height: 100%;
-  border: 3px solid var(--color-border-light);
+  border: 2px solid var(--color-border-light);
   padding: 1rem;
   border-radius: 1rem;
 }
@@ -38,4 +38,12 @@
   margin: 0;
   border: none;
   width: 100%;
+}
+
+/* MEDIA QUERIES (tablets) */
+@media screen and (max-width: 1024px) {
+  .place-search-container {
+    width: 100%;
+    height: calc(50% - 0.4rem);
+  }
 }

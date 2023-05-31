@@ -3,14 +3,14 @@
   position: relative;
   width: 100%;
   min-height: 600px;
-  background-color: #fff;
+  background-color: var(--color-white);
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding-top: 1rem;
+  margin-top: 1rem;
 }
 
 .home-content-container {
-  width: 1200px;
+  width: 100%;
   display: block;
 }

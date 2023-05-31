@@ -1,15 +1,14 @@
 import ReactDOMServer from "react-dom/server";
 import { PositionsProps } from "@/src/interfaces/Course";
-import { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import CustomOverlayContent from "./CustomOverlayContent";
-import styles from "./KakaoMap.module.css";
 
 declare global {
   interface Window {
     kakao: any;
   }
 }
-export default function KakaoMap({ mapData }: PositionsProps) {
+export default React.memo(function KakaoMap({ mapData }: PositionsProps) {
   useEffect(() => {
     const { kakao } = window;
 
@@ -24,7 +23,7 @@ export default function KakaoMap({ mapData }: PositionsProps) {
     };
     const mapOption = {
       center: center(), // 지도의 중심좌표
-      level: 8, // 지도의 확대 레벨
+      level: 7, // 지도의 확대 레벨
     };
 
     var map = new kakao.maps.Map(mapContainer, mapOption); // 지도를 생성합니다
@@ -51,7 +50,7 @@ export default function KakaoMap({ mapData }: PositionsProps) {
       });
 
       const content = ReactDOMServer.renderToString(
-        <CustomOverlayContent title={position.name} />
+        <CustomOverlayContent title={position.name} id={position.placeId} />
       );
 
       const customOverlay = new kakao.maps.CustomOverlay({
@@ -89,8 +88,8 @@ export default function KakaoMap({ mapData }: PositionsProps) {
 
   return (
     <>
-      <div id="map" style={{ flexBasis: "62%" }} />
+      <div id="map" style={{ flex: "1" }} />
       <p id="result" />
     </>
   );
-}
+});

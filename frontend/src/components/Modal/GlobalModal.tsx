@@ -4,23 +4,19 @@ import { useDispatch, useSelector } from "react-redux";
 import LoginModal from "./LoginModal";
 import BasicModal from "./BasicModal";
 import DeleteMemberModal from "./DeleteMemberModal";
+import { useAppSelector } from "@/src/hooks/useReduxHooks";
+import HeaderSideMenu from "../Header/HeaderSideMenu";
 
 interface ModalComponent {
   type: string;
   component: JSX.Element;
 }
 
-interface RootState {
-  modal: {
-    modalType: string;
-    isOpen: boolean;
-  };
-}
-
 const MODAL_TYPES = {
   LoginModal: "LoginModal",
   BasicModal: "BasicModal",
   DeleteMemberModal: "DeleteMemberModal",
+  MenuModal: "HeaderSideMenu",
 } as const;
 
 const MODAL_COMPONENTS: ModalComponent[] = [
@@ -36,10 +32,11 @@ const MODAL_COMPONENTS: ModalComponent[] = [
     type: MODAL_TYPES.DeleteMemberModal,
     component: <DeleteMemberModal />,
   },
+  { type: MODAL_TYPES.MenuModal, component: <HeaderSideMenu /> },
 ];
 
 export default function GlobalModal() {
-  const { modalType, isOpen } = useSelector((state: RootState) => state.modal);
+  const { modalType, isOpen, opacity } = useAppSelector((state) => state.modal);
   const dispatch = useDispatch();
   if (!isOpen) return null;
 
@@ -52,7 +49,7 @@ export default function GlobalModal() {
   };
   return (
     <Container>
-      <Overlay onClick={() => dispatch(closeModal())} />
+      <Overlay opacity={opacity} onClick={() => dispatch(closeModal())} />
       {renderModal()}
     </Container>
   );
@@ -66,8 +63,8 @@ const Container = styled.div`
   inset: 0;
   z-index: 3;
 `;
-const Overlay = styled.div`
+const Overlay = styled.div<{ opacity: number }>`
   position: fixed;
   inset: 0;
-  background-color: rgba(0, 0, 0, 0.6);
+  background-color: rgba(0, 0, 0, ${(props) => props.opacity ?? 0.6});
 `;

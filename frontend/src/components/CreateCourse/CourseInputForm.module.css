@@ -1,21 +1,25 @@
 .form {
-  flex: 6;
-  border: 3px solid var(--color-border-light);
-  padding: 0.6rem 1.4rem;
+  width: calc(65% - 0.4rem);
+  display: flex;
+  flex-direction: column;
+  border: 2px solid var(--color-border-light);
+  padding: 1.6rem 1.6rem;
+  gap: 1.2rem;
   border-radius: 1rem;
 }
-.first-line {
+
+.first-input-wrapper,
+.second-input-wrapper {
+  position: relative;
   display: flex;
   align-items: center;
-  padding-bottom: 1rem;
-  gap: 1.4rem;
+  gap: 1.2rem;
 }
-.second-line {
+.col-wrapper {
+  width: 100%;
   display: flex;
   align-items: center;
-  padding-bottom: 1rem;
-  gap: 1.4rem;
-  /* height: 100%; */
+  gap: 1.2rem;
 }
 
 /* TOGGLE SWITCH BUTTON */
@@ -43,8 +47,8 @@
 .toggle-switch {
   position: relative;
   display: inline-block;
-  width: 88px;
-  height: 38px;
+  width: 5.4rem;
+  height: 2.4rem;
   background-color: #ccc;
   border-radius: 34px;
   padding: 4px;
@@ -53,38 +57,43 @@
 .toggle-switch.publish {
   background-color: var(--color-primary);
 }
-.input {
+
+.switch {
   display: none;
 }
+
 .toggle-switch:after {
   content: "";
   position: absolute;
-  width: 30px;
-  height: 30px;
+  width: 1.9rem;
+  height: 1.9rem;
   background-color: white;
   border-radius: 50%;
   transition: all 0.3s ease-in-out; /* 트랜지션 속성 추가 */
 }
 .toggle-switch.publish:after {
-  transform: translateX(50px);
+  transform: translateX(49px);
 }
 
 .input-group {
   position: relative;
   width: 100%;
-  margin-bottom: 4px;
+  height: 100%;
 }
-.input-group span {
-  font-size: 14px;
+.input-title {
+  font-size: 1rem;
   color: #555;
-  text-transform: capitalize;
   display: block;
-  margin-bottom: 5px;
+  margin-bottom: 4px;
 }
 
 .input-group input,
 .input-group select,
 .input-group textarea {
+  -webkit-appearance: none; /* for chrome */
+  -moz-appearance: none; /*for firefox*/
+  appearance: none;
+  width: 100%;
   background: #fafafa;
   -webkit-box-shadow: inset 0 1px 3px 0 rgba(0, 0, 0, 0.08);
   -moz-box-shadow: inset 0 1px 3px 0 rgba(0, 0, 0, 0.08);
@@ -92,17 +101,28 @@
   -webkit-border-radius: 5px;
   -moz-border-radius: 5px;
   border-radius: 5px;
-  padding: 10px 14px;
-  font-size: 14px;
+  font-size: 0.9rem;
   color: #666;
   outline: none;
-  margin: 0;
   border: none;
+  margin: 0;
+  padding: 0.7rem 0.8rem;
+}
+
+.input-group input[type="date"]::before {
+  content: attr(data-placeholder);
   width: 100%;
 }
-.input-group textarea {
-  height: 120px;
+
+.input-group input[type="date"]:focus::before,
+.input-group input[type="date"]:valid::before {
+  display: none;
+}
+
+.content {
+  display: block;
   resize: none;
+  height: 78%;
 }
 .input-group option {
   padding: 0.6rem 0;
@@ -110,4 +130,78 @@
 
 .input-group.region {
   width: 80%;
+}
+
+.input-group.courseDays {
+  color: #555;
+  width: 70%;
+}
+.error-text {
+  position: absolute;
+  top: 100%;
+  font-size: 0.8rem;
+  margin-left: 6px;
+  transform: translateY(-3px);
+  color: var(--color-red);
+  display: flex;
+  align-items: center;
+}
+
+.valid-text-length {
+  position: absolute;
+  top: 100%;
+  font-size: 0.7rem;
+  transform: translateY(-3px);
+  right: 0;
+  color: var(--color-text-semi);
+}
+
+.valid-title-length {
+  font-size: 0.7rem;
+  color: var(--color-text-semi);
+  margin-left: 0.3rem;
+}
+
+/* MEDIA QUERIES (tablets) */
+@media screen and (max-width: 1024px) {
+  .form {
+    width: 100%;
+    height: calc(50% - 0.4rem);
+    padding: 1.2rem;
+    gap: 0.9rem;
+  }
+  .first-input-wrapper,
+  .second-input-wrapper {
+    gap: 0.8rem;
+  }
+  .date-wrapper {
+    gap: 0.9rem;
+  }
+
+  .input-group {
+    padding: 0.5rem 0.6rem 0;
+  }
+}
+
+/* MEDIA QUERIES (phones) */
+@media screen and (max-width: 600px) {
+  .form {
+    height: calc(50% - 0.4rem);
+    padding: 1rem;
+  }
+  .second-input-wrapper {
+    flex-direction: column;
+  }
+  .input-group {
+    padding: 0;
+  }
+  .error-text {
+    font-size: 0.7rem;
+  }
+  .input-group input,
+  .input-group select,
+  .input-group textarea {
+    font-size: 0.8rem;
+    padding: 0.6rem 0.7rem;
+  }
 }

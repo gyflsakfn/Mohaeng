@@ -3,8 +3,10 @@ import { RootState } from "@/src/store/store";
 import { setPage } from "@/src/store/reducers/pageSlice";
 import { useEffect, useState } from "react";
 import styles from "./Pagebar.module.css";
-import { AiOutlineDoubleLeft, AiOutlineDoubleRight } from "react-icons/ai";
-
+import {
+  MdKeyboardDoubleArrowLeft,
+  MdKeyboardDoubleArrowRight,
+} from "react-icons/md";
 export interface totalPageProps {
   totalPage: number;
 }
@@ -13,7 +15,7 @@ const Pagebar = (totalPage: totalPageProps) => {
   const dispatch = useDispatch();
 
   const page = useSelector((state: RootState) => state.page.page);
-  const maxPage = Math.ceil(totalPage.totalPage / 10);
+  const maxPage = Math.ceil(totalPage?.totalPage / 10);
 
   const [pageNumbers, setPageNumber] = useState<number[]>([]);
 
@@ -37,32 +39,34 @@ const Pagebar = (totalPage: totalPageProps) => {
   return (
     <div className={styles.PageContainer}>
       <button
-        className={styles.prevNextButton}
+        className={`${styles.prev} ${styles.button}`}
         onClick={() => {
           pagePer > 0 && setPagePer(pagePer - 1);
         }}
       >
-        prev
+        <MdKeyboardDoubleArrowLeft />
       </button>
       <ul className={styles.pagination}>
         {pageNumbers.length > 0 &&
           pageNumbers.map((number) => (
-            <li key={number} className={styles["page-item"]}>
-              {number <= totalPage.totalPage && (
-                <button onClick={() => dispatch(setPage(number))}>
-                  {number}
-                </button>
-              )}
+            <li
+              key={number}
+              className={`${styles["page-item"]} ${
+                page === number && styles.active
+              }`}
+              onClick={() => dispatch(setPage(number))}
+            >
+              {number <= totalPage.totalPage && number}
             </li>
           ))}
       </ul>
       <button
-        className={styles.prevNextButton}
+        className={`${styles.next} ${styles.button}`}
         onClick={() => {
           pagePer < maxPage - 1 && setPagePer(pagePer + 1);
         }}
       >
-        next
+        <MdKeyboardDoubleArrowRight />
       </button>
     </div>
   );

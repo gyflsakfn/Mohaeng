@@ -37,7 +37,6 @@ public class CourseController {
     @GetMapping("/placeSearch")
     public ResponseEntity placeSearch(@ModelAttribute CoursePlaceSearchReq req,
                                       @PageableDefault(size = 5)Pageable pageable){
-
         CoursePlaceSearchRes res = courseService.placeSearch(req, pageable);
         return ResponseEntity.ok().body(BaseResponse.success("OK", res));
     }
@@ -45,9 +44,6 @@ public class CourseController {
     @PostMapping
     public ResponseEntity createCourse(HttpServletRequest request,
                                        @Valid @RequestBody CourseReq courseReq){
-
-        //TODO: @Valid 결과를 RestcontrollerAdvice를 통해 처리하도록 수정해야함
-
         String memberEmail = tokenGenerator.parseEmailFromToken(request.getHeader("Access-Token"));
         CourseIdRes courseIdRes = courseService.createCourse(courseReq, memberEmail);
         return ResponseEntity.ok().body(BaseResponse.success("OK", courseIdRes));
@@ -64,9 +60,6 @@ public class CourseController {
     public ResponseEntity updateCourse(HttpServletRequest request,
                                        @PathVariable Long courseId,
                                        @Valid @RequestBody CourseUpdateReq courseUpdateReq){
-
-        //TODO: @Valid 결과를 RestcontrollerAdvice를 통해 처리하도록 수정해야함
-
         String memberEmail = tokenGenerator.parseEmailFromToken(request.getHeader("Access-Token"));
         CourseIdRes courseIdRes = courseService.updateCourse(memberEmail, courseId, courseUpdateReq);
         return ResponseEntity.ok().body(BaseResponse.success("OK", courseIdRes));
@@ -75,7 +68,6 @@ public class CourseController {
     @DeleteMapping("/{courseId}")
     public ResponseEntity deleteCourse(HttpServletRequest request,
                                        @PathVariable Long courseId) {
-
         String memberEmail = tokenGenerator.parseEmailFromToken(request.getHeader("Access-Token"));
         courseService.deleteCourse(memberEmail, courseId);
         return ResponseEntity.ok().body(BaseResponse.success("OK"));

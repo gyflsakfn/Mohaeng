@@ -1,13 +1,20 @@
 import styles from "./MyCourse.module.css";
-import { useState, useRef } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import { RootState } from "@/src/store/store";
-import { BiBookmark } from "react-icons/bi";
-import UserBookmarkItem from "./UserBookmarkItem";
 import MyCourseItem from "./MyCourseItem";
+import { useAppDispatch } from "@/src/hooks/useReduxHooks";
+import { useEffect } from "react";
+import { getMyCourse } from "@/src/store/reducers/myCourseSlice";
+import cookie from "react-cookies";
 
 const MyCourse = () => {
+  const appDispatch = useAppDispatch();
+  const accessToken = cookie.load("accessToken");
   const myCourse = useSelector((state: RootState) => state.myCourse.data);
+
+  useEffect(() => {
+    appDispatch(getMyCourse(accessToken));
+  }, []);
 
   return (
     <>

@@ -1,5 +1,3 @@
-import { initialState } from "./CourseFormSlice";
-import { Keyword } from "@/src/interfaces/Keyword";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 interface IArea {

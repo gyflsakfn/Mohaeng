@@ -33,7 +33,6 @@ public class Course extends BaseTimeEntity {
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "member_id")
     private Member member;
-
     @Column(nullable = false)
     private String title;
     private String region;
@@ -41,8 +40,6 @@ public class Course extends BaseTimeEntity {
 
     private LocalDateTime startDate;
     private LocalDateTime endDate;
-    private LocalDateTime deletedDate;
-
     private String content;
     private Integer likeCount;
     @Enumerated(EnumType.STRING)

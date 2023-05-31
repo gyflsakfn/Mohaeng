@@ -1,15 +1,27 @@
 .ContentWrapper {
   display: flex;
   flex-direction: column;
-  position: relative;
-  align-items: center;
-  justify-content: center;
+  /* align-items: center;
+  justify-content: center; */
   width: 28rem;
   height: 28rem;
-  background: #fff;
+  background: var(--color-white);
   border-radius: 12px;
-  padding: 4rem;
+  padding: 4rem 3rem;
   z-index: 1;
+  text-align: center;
+}
+
+.TextWrapper {
+  margin-bottom: 5rem;
+}
+
+.h2 {
+  margin-bottom: 4rem;
+}
+
+.text {
+  text-align: start;
 }
 
 .ButtonWrapper {
@@ -17,15 +29,4 @@
   gap: 1rem;
   align-items: center;
   justify-content: center;
-  margin-top: 9rem;
-  margin-bottom: 2rem;
-}
-
-.TextWrapper {
-  text-align: center;
-  margin-top: 2rem;
-  margin-bottom: 1rem;
-}
-.h3 {
-  text-align: center;
 }

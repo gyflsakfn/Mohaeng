@@ -7,6 +7,7 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.validator.constraints.Length;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -17,6 +18,7 @@ import java.util.List;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class CourseUpdateReq {
     @NotBlank
+    @Length(min = 4, max = 25)
     private String title;
     @NotNull
     private String startDate;
@@ -29,6 +31,8 @@ public class CourseUpdateReq {
     private String region;
 
     private String thumbnailUrl;
+    @NotBlank
+    @Length(min = 10, max = 300)
     private String content;
     @NotEmpty
     private List<Long> placeIds = new ArrayList<>();

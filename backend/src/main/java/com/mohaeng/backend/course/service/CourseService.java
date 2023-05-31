@@ -1,8 +1,6 @@
 package com.mohaeng.backend.course.service;
 
-import com.mohaeng.backend.course.domain.Course;
-import com.mohaeng.backend.course.domain.CoursePlace;
-import com.mohaeng.backend.course.domain.CourseStatus;
+import com.mohaeng.backend.course.domain.*;
 import com.mohaeng.backend.course.dto.*;
 import com.mohaeng.backend.course.dto.request.*;
 import com.mohaeng.backend.course.dto.response.*;
@@ -21,7 +19,6 @@ import com.mohaeng.backend.place.domain.Place;
 import com.mohaeng.backend.place.repository.PlaceRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
@@ -168,10 +165,20 @@ public class CourseService {
         // 2. 작성자와 요청자가 같은지 확인
         isWriter(memberEmail, course.getMember());
 
-        // 3. course soft delete 처리
+        // 3-1. course 좋아요 & 북마크 soft delete 처리
+        List<CourseLikes> likesAllByCourse = courseLikesRepository.findAllByCourse(course);
+        for (CourseLikes courseLikes : likesAllByCourse) {
+            courseLikes.updateDeletedDate();
+        }
+
+        List<CourseBookmark> bookmarksAllByCourse1 = courseBookmarkRepository.findAllByCourse(course);
+        for (CourseBookmark courseBookmark : bookmarksAllByCourse1) {
+            courseBookmark.updateDeletedDate();
+        }
+
+        // 3-2. course soft delete 처리
         course.updateDeletedDate(course.getCoursePlaces());
     }
-
 
     public CourseListRes getCourseList(CourseSearchDto courseSearchDto, Pageable pageable, String memberEmail) {
         // 1. 로그인 유무 확인
@@ -214,11 +221,11 @@ public class CourseService {
     }
 
     private Member isLogin(String email){
-        return isNull(email) ? null : memberRepository.findByEmail(email).orElseThrow(MemberNotFoundException::new);
+        return isNull(email) ? null : memberRepository.findByEmailAndDeletedDateIsNull(email).orElseThrow(MemberNotFoundException::new);
     }
 
     private Member isMember(String memberEmail){
-        return memberRepository.findByEmail(memberEmail).orElseThrow(MemberNotFoundException::new);
+        return memberRepository.findByEmailAndDeletedDateIsNull(memberEmail).orElseThrow(MemberNotFoundException::new);
     }
 
     private Course isCourse(Long id){

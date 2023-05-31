@@ -3,19 +3,18 @@ import styles from "./CourseList.module.css";
 import React, { useEffect, useState } from "react";
 import CourseItem from "./CourseItem";
 import { useAppDispatch, useAppSelector } from "@/src/hooks/useReduxHooks";
-import { getCourseListAction } from "@/src/store/reducers/CourseListSlice";
 import { setPage } from "@/src/store/reducers/pageSlice";
 import Pagebar from "../Pagenation/Pagebar";
 import ListContainer from "../UI/ListContainer";
+import { getCourseListAction } from "@/src/store/thunks/courseThunks";
 
 const CourseList = () => {
-  const { courseList, totalElements, totalPages } = useAppSelector(
-    (state) => state.course
-  );
+  const { courseList, totalPages } = useAppSelector((state) => state.course);
   const { area, keyword, sort } = useAppSelector((state) => state.filter);
   const page = useAppSelector((state) => state.page.page);
   const dispatch = useAppDispatch();
   const { region } = area;
+
   useEffect(() => {
     dispatch(setPage(page));
     dispatch(
@@ -48,8 +47,11 @@ const CourseList = () => {
           ))}
         </ListContainer>
       ) : (
-        <p>데이터가 존재하지 않습니다. 코스를 등록해주세요.</p>
+        <p>
+          등록된 코스가 없습니다. 자신만의 여행 코스를 작성하여 공유해 보세요!
+        </p>
       )}
+
       {totalPages !== 0 && totalPages ? (
         <Pagebar totalPage={totalPages} />
       ) : null}
@@ -57,4 +59,4 @@ const CourseList = () => {
   );
 };
 
-export default CourseList;
+export default React.memo(CourseList);

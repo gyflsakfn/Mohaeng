@@ -12,4 +12,8 @@ public class FindSearchReviewsResponse {
     private int totalPages;
     private long totalElements;
     private double averageRating;
+
+    public FindSearchReviewsResponse(List<FindAllReviewResponse> reviews) {
+        this.reviews = reviews;
+    }
 }

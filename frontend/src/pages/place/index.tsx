@@ -39,7 +39,6 @@ export default function Place() {
   }, [areaCode]);
 
   useEffect(() => {
-    console.log("AreaCode is " + areaCode);
     const response = async () => {
       await axios
         .get(`/api/places`, {
@@ -65,9 +64,11 @@ export default function Place() {
         </div>
         <div className={styles["place-body-container"]}>
           <div className={styles["place-body-head"]}></div>
-          <AreaSelector />
+          <div className={styles["filter-wrapper"]}>
+            <AreaSelector />
+          </div>
           <PlaceList />
-          <PageBar totalPage={totalPages} />
+          {totalPages && <PageBar totalPage={totalPages} />}
         </div>
       </div>
     </main>
